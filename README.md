@@ -13,7 +13,7 @@ ln -s ~/.vim/tmux.conf ~/.tmux.conf
 ln -s ~/.vim/tmux ~/.tmux
 ```
 
-E atualizar os plugins do ViM:
+E atualizar os plugins do ViM / TMUX:
 ```bash
 git submodule foreach git pull origin master
 ```
