@@ -25,6 +25,7 @@ export PS1="\[$bold\][\[$blue\]\[$bold\]\u\[$reset\]\[$bold\]@\[$bold\]\[$green\
 
 #export TERM=gnome
 
+# ALIASES
 alias ls='ls --color=auto'
 alias grep='grep --color=always'
 alias dockerm="docker rm $(docker ps -a -q)"
@@ -33,6 +34,32 @@ alias dockermi="docker rmi $(docker images -q)"
 alias netalyzr="java -jar ~/.NetalyzrCLI.jar"
 alias apgdiff="java -jar ~/.apgdiff-2.4.jar"
 alias tmux="tmux -2"
+alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias bashrc="vim ~/.bashrc && source ~/.bashrc"
+alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
+alias docker="btime docker"
+
+# FUNCTIONS
+extract () {
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1   ;;
+      *.tar.gz)    tar xzf $1   ;;
+      *.bz2)       bunzip2 $1   ;;
+      *.rar)       unrar x $1     ;;
+      *.gz)        gunzip $1    ;;
+      *.tar)       tar xf $1    ;;
+      *.tbz2)      tar xjf $1   ;;
+      *.tgz)       tar xzf $1   ;;
+      *.zip)       unzip $1     ;;
+      *.Z)         uncompress $1;;
+      *.7z)        7z x $1      ;;
+      *)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
 
 case ${TERM} in
   xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
@@ -54,24 +81,3 @@ shopt -s histappend
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 
-extract ()
-{
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1     ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
-      *)           echo "'$1' cannot be extracted via extract()" ;;
-    esac
-  else
-    echo "'$1' is not a valid file"
-  fi
-}
