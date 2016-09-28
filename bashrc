@@ -38,6 +38,7 @@ alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias bashrc="vim ~/.bashrc && source ~/.bashrc"
 alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
 alias docker="btime docker"
+alias docker-ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${CID}"
 
 # FUNCTIONS
 extract () {
@@ -59,6 +60,13 @@ extract () {
   else
     echo "'$1' is not a valid file"
   fi
+}
+
+comp32 () { 
+    gcc -m32 -E -o ${1%.*}.i $1
+    gcc -m32 -S -o ${1%.*}.s ${1%.*}.i
+    gcc -m32 -c -o ${1%.*}.o ${1%.*}.s
+    gcc -m32 -o ${1%.*} ${1%.*}.o
 }
 
 case ${TERM} in
