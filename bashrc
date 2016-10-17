@@ -72,7 +72,7 @@ comp32 () {
 docker-cleasing () {
     docker kill $(docker ps -q)
     docker rm -v -f $(docker ps -a -q -f status=exited)
-    docker rmi $(docker images -a -q)
+    docker rmi -f $(docker images -a -q)
     docker volume rm $(docker volume ls -qf dangling=true)
 }
 
