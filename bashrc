@@ -69,6 +69,14 @@ comp32 () {
     gcc -m32 -o ${1%.*} ${1%.*}.o
 }
 
+docker-cleasing () {
+    docker kill $(docker ps -q)
+    docker rm -v -f $(docker ps -a -q -f status=exited)
+    docker rmi $(docker images -a -q)
+    docker volume rm $(docker volume ls -qf dangling=true)
+}
+
+
 case ${TERM} in
   xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
     PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
@@ -77,6 +85,29 @@ case ${TERM} in
   screen)
     PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033_%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
     ;;
+esac
+
+case ${TERM} in
+
+    screen*)
+
+        # user command to change default pane title on demand
+        function title { TMUX_PANE_TITLE="$*"; }
+
+        # function that performs the title update (invoked as PROMPT_COMMAND)
+        function update_title { printf "\033]2;%s\033\\" "${1:-$TMUX_PANE_TITLE}"; }
+
+        # default pane title is the name of the current process (i.e. 'bash')
+        TMUX_PANE_TITLE=$(ps -o comm $$ | tail -1)
+
+        # Reset title to the default before displaying the command prompt
+        PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'update_title'   
+
+        # Update title before executing a command: set it to the command
+        trap 'update_title "$BASH_COMMAND"' DEBUG
+
+        ;;
+
 esac
 
 # avoid duplicates..
