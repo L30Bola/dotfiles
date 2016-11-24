@@ -1,39 +1,42 @@
 [submodule "bundle/vim-latex-live-preview"]
 	path = bundle/vim-latex-live-preview
-	url = https://github.com/xuhdev/vim-latex-live-preview.git
+	url = git@github.com:xuhdev/vim-latex-live-preview.git
         ignore = dirty
 [submodule "tmux/plugins/tmux-battery"]
 	path = tmux/plugins/tmux-battery
-	url = https://github.com/tmux-plugins/tmux-battery.git
+	url = git@github.com:tmux-plugins/tmux-battery.git
 [submodule "tmux/plugins/tmux-continuum"]
 	path = tmux/plugins/tmux-continuum
-	url = https://github.com/tmux-plugins/tmux-continuum.git
+	url = git@github.com:tmux-plugins/tmux-continuum.git
 [submodule "tmux/plugins/tmux-logging"]
 	path = tmux/plugins/tmux-logging
-	url = https://github.com/tmux-plugins/tmux-logging.git
+	url = git@github.com:tmux-plugins/tmux-logging.git
 [submodule "tmux/plugins/tmux-online-status"]
 	path = tmux/plugins/tmux-online-status
-	url = https://github.com/tmux-plugins/tmux-online-status.git
+	url = git@github.com:tmux-plugins/tmux-online-status.git
         ignore = dirty
 [submodule "tmux/plugins/tmux-resurrect"]
 	path = tmux/plugins/tmux-resurrect
-	url = https://github.com/tmux-plugins/tmux-resurrect.git
+	url = git@github.com:tmux-plugins/tmux-resurrect.git
 [submodule "tmux/plugins/tmux-sensible"]
 	path = tmux/plugins/tmux-sensible
-	url = https://github.com/tmux-plugins/tmux-sensible.git
+	url = git@github.com:tmux-plugins/tmux-sensible.git
 [submodule "tmux/plugins/tmux-sidebar"]
 	path = tmux/plugins/tmux-sidebar
-	url = https://github.com/tmux-plugins/tmux-sidebar.git
+	url = git@github.com:tmux-plugins/tmux-sidebar.git
         ignore = dirty
 [submodule "tmux/plugins/tmux-yank"]
 	path = tmux/plugins/tmux-yank
-	url = https://github.com/tmux-plugins/tmux-yank.git
+	url = git@github.com:tmux-plugins/tmux-yank.git
 [submodule "tmux/plugins/tpm"]
 	path = tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm.git
+	url = git@github.com:tmux-plugins/tpm.git
 [submodule "tmux/plugins/tmux-prefix-highlight"]
 	path = tmux/plugins/tmux-prefix-highlight
-	url = https://github.com/tmux-plugins/tmux-prefix-highlight.git
+	url = git@github.com:tmux-plugins/tmux-prefix-highlight.git
 [submodule "tmux/plugins/tmux-copycat"]
 	path = tmux/plugins/tmux-copycat
-	url = https://github.com/tmux-plugins/tmux-copycat.git
+	url = git@github.com:tmux-plugins/tmux-copycat.git
+[submodule "bundle/syntastic"]
+	path = bundle/syntastic
+	url = git@github.com:vim-syntastic/syntastic.git

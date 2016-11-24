@@ -6,6 +6,7 @@ set softtabstop=0
 set expandtab
 set shiftwidth=4
 set smarttab
+set number
 
 syntax on
 filetype plugin indent on
@@ -39,3 +40,12 @@ endfunction
 inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
 " END: auto paste-mode when pasting in INSERT mode with support for TMUX
 
+" syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
