@@ -3,3 +3,5 @@
 /home/godoy	40
 /home/godoy	40
 /home/godoy/Documents/Projetos/visPublica	40
+/projetos/Desembarque-MP2/Projetos/Rancher-Cron	40
+/projetos/Desembarque-MP2/Projetos/Rancher-Cron/backup-dadosabertos	40

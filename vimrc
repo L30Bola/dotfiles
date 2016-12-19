@@ -8,6 +8,10 @@ set shiftwidth=4
 set smarttab
 set number
 
+" F3 enables and disables the line numbering inside ViM
+noremap <F3> :set invnumber<CR>
+inoremap <F3> <C-O>:set invnumber<CR>
+
 syntax on
 filetype plugin indent on
 
