@@ -12,8 +12,7 @@ white=$(tput setaf 7)
 [ -z "$PS1" ] && return
 
 # Use bash-completion, if available
-[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
-        . /usr/share/bash-completion/bash_completion
+[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
 
 LS_COLORS="di=1;34;40:ln=1;35;40:so=1;32;40:pi=1;33;40:ex=1;31;40:bd=1;34;46:cd=1;0;44:su=1;0;41:sg=1;0;46:tw=1;0;42:ow=1;0;43:"
 export LS_COLORS
@@ -28,8 +27,8 @@ export PS1="\[$bold\][\[$blue\]\[$bold\]\u\[$reset\]\[$bold\]@\[$bold\]\[$green\
 # ALIASES
 alias ls='ls --color=auto'
 alias grep='grep --color=always'
-alias dockerm="docker rm $(docker ps -a -q)"
-alias dockermi="docker rmi $(docker images -q)"
+alias dockerm="docker rm \$(docker ps -a -q)"
+alias dockermi="docker rmi \$(docker images -q)"
 # http://blog.pixelastic.com/2015/09/29/better-listing-of-docker-images-and-container/
 alias netalyzr="java -jar ~/.NetalyzrCLI.jar"
 alias apgdiff="java -jar ~/.apgdiff-2.4.jar"
@@ -39,23 +38,23 @@ alias bashrc="vim ~/.bashrc && source ~/.bashrc"
 alias vimrc="vim ~/.vimrc"
 alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
 alias docker="btime docker"
-alias docker-ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${CID}"
+alias docker-ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}' \${CID}"
 
 # FUNCTIONS
 extract () {
-  if [ -f $1 ] ; then
+  if [ -f "$1" ] ; then
     case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1     ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
+      *.tar.bz2)   tar xjf "$1"   ;;
+      *.tar.gz)    tar xzf "$1"   ;;
+      *.bz2)       bunzip2 "$1"   ;;
+      *.rar)       unrar x "$1"     ;;
+      *.gz)        gunzip "$1"    ;;
+      *.tar)       tar xf "$1"    ;;
+      *.tbz2)      tar xjf "$1"   ;;
+      *.tgz)       tar xzf "$1"   ;;
+      *.zip)       unzip "$1"     ;;
+      *.Z)         uncompress "$1" ;;
+      *.7z)        7z x "$1"      ;;
       *)           echo "'$1' cannot be extracted via extract()" ;;
     esac
   else
@@ -64,17 +63,17 @@ extract () {
 }
 
 comp32 () { 
-    gcc -m32 -E -o ${1%.*}.i $1
-    gcc -m32 -S -o ${1%.*}.s ${1%.*}.i
-    gcc -m32 -c -o ${1%.*}.o ${1%.*}.s
-    gcc -m32 -o ${1%.*} ${1%.*}.o
+    gcc -m32 -E -o "${1%.*}".i "$1"
+    gcc -m32 -S -o "${1%.*}".s "${1%.*}".i
+    gcc -m32 -c -o "${1%.*}".o "${1%.*}".s
+    gcc -m32 -o "${1%.*}" "${1%.*}".o
 }
 
 docker-cleasing () {
-    sudo docker kill $(docker ps -q)
-    docker rm -v -f $(docker ps -a -q -f status=exited)
-    docker rmi -f $(docker images -a -q)
-    docker volume rm $(docker volume ls -qf dangling=true)
+    docker kill "$(docker ps -q)"
+    docker rm -v -f "$(docker ps -a -q -f status=exited)"
+    docker rmi -f "$(docker images -a -q)"
+    docker volume rm "$(docker volume ls -qf dangling=true)"
     sudo rm -rf /var/lib/docker/tmp/*
 }
 
