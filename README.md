@@ -5,22 +5,22 @@ Repositório com minhas configs pessoais do vim, bash e tmux.
 Após clonar o repositório, devem ser feitos links simbólicos para as pastas/arquivos.
 
 ##### Plugins para o ViM:
-pathogen.vim: https://github.com/tpope/vim-pathogen
+pathogen.vim: https://github.com/tpope/vim-pathogen <br>
 syntastic: https://github.com/vim-syntastic/syntastic
 
 ##### Plugin para o TMUX:
-tpm: https://github.com/tmux-plugins/tpm
-tmux-battery: https://github.com/tmux-plugins/tmux-battery
-tmux-continuum: https://github.com/tmux-plugins/tmux-continuum
-tmux-copycat: https://github.com/tmux-plugins/tmux-copycat
-tmux-logging: https://github.com/tmux-plugins/tmux-logging
-tmux-online-status: https://github.com/tmux-plugins/tmux-online-status
-tmux-prefix-highlight: https://github.com/tmux-plugins/tmux-prefix-highlight
-tmux-resurrect: https://github.com/tmux-plugins/tmux-resurrect
-tmux-sensible: https://github.com/tmux-plugins/tmux-sensible
-tmux-sidebar: https://github.com/tmux-plugins/tmux-sidebar
-tmux-yank: https://github.com/tmux-plugins/tmux-yank
-vim-tmux: https://github.com/tmux-plugins/vim-tmux
+tpm: https://github.com/tmux-plugins/tpm <br>
+tmux-battery: https://github.com/tmux-plugins/tmux-battery <br>
+tmux-continuum: https://github.com/tmux-plugins/tmux-continuum <br>
+tmux-copycat: https://github.com/tmux-plugins/tmux-copycat <br>
+tmux-logging: https://github.com/tmux-plugins/tmux-logging <br>
+tmux-online-status: https://github.com/tmux-plugins/tmux-online-status <br>
+tmux-prefix-highlight: https://github.com/tmux-plugins/tmux-prefix-highlight <br>
+tmux-resurrect: https://github.com/tmux-plugins/tmux-resurrect <br>
+tmux-sensible: https://github.com/tmux-plugins/tmux-sensible <br>
+tmux-sidebar: https://github.com/tmux-plugins/tmux-sidebar <br>
+tmux-yank: https://github.com/tmux-plugins/tmux-yank <br>
+vim-tmux: https://github.com/tmux-plugins/vim-tmux <br>
 
 Assumindo que você clone no seu `~/.vim`:
 ```bash
