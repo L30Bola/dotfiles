@@ -131,6 +131,18 @@ case ${TERM} in
 
 esac
 
+## BASH configs
+
+# Number of lines or commands to be added to history file
+export HISTSIZE=50000
+
+# Number of lines or commands that are allowed to be stored on history file
+export HISTFILESIZE=50000
+
+# Date and time added to history before each command is written on the history file
+# It's formatted as: year/month/day - hour:minute:second
+export HISTTIMEFORMAT="%Y/%m/%d - %T: "
+
 # avoid duplicates..
 export HISTCONTROL=ignoredups:erasedups
 
@@ -139,5 +151,4 @@ shopt -s histappend
 
 # After each command, save and reload history
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-
 
