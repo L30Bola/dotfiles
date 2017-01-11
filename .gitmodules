@@ -40,6 +40,9 @@
 [submodule "bundle/syntastic"]
 	path = bundle/syntastic
 	url = git@github.com:vim-syntastic/syntastic.git
-[submodule "/home/godoy/.vim/bundle/vim-tmux"]
+[submodule "bundle/vim-tmux"]
 	path = bundle/vim-tmux
 	url = git@github.com:tmux-plugins/vim-tmux.git
+[submodule "bundle/Dockerfile"]
+	path = bundle/Dockerfile
+	url = https://github.com/ekalinin/Dockerfile.vim.git
