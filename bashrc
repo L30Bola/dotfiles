@@ -1,28 +1,44 @@
+# shellcheck disable=SC2034
 reset=$(tput sgr0)
+# shellcheck disable=SC2034
 bold=$(tput bold)
+# shellcheck disable=SC2034
 red=$(tput setaf 1)
+# shellcheck disable=SC2034
 green=$(tput setaf 2)
 # shellcheck disable=SC2034
+lime_yellow=$(tput setaf 190)
+# shellcheck disable=SC2034
 yellow=$(tput setaf 3)
+# shellcheck disable=SC2034
+powder_blue=$(tput setaf 153)
+# shellcheck disable=SC2034
 blue=$(tput setaf 4)
+# shellcheck disable=SC2034
 magenta=$(tput setaf 5)
 # shellcheck disable=SC2034
 cyan=$(tput setaf 6)
 # shellcheck disable=SC2034
 white=$(tput setaf 7)
+# shellcheck disable=SC2034
+blink=$(tput blink)
+# shellcheck disable=SC2034
+reverse=$(tput smso)
+# shellcheck disable=SC2034
+underline=$(tput smul)
 
-LANG=en_US.UTF-8
+LANG="en_US.UTF-8"
 LC_CTYPE="en_US.UTF-8"
-LC_NUMERIC=pt_BR.UTF-8
-LC_TIME=pt_BR.UTF-8
+LC_NUMERIC="pt_BR.UTF-8"
+LC_TIME="pt_BR.UTF-8"
 LC_COLLATE="en_US.UTF-8"
-LC_MONETARY=pt_BR.UTF-8
+LC_MONETARY="pt_BR.UTF-8"
 LC_MESSAGES="en_US.UTF-8"
-LC_PAPER=pt_BR.UTF-8
+LC_PAPER="pt_BR.UTF-8"
 LC_NAME="en_US.UTF-8"
 LC_ADDRESS="en_US.UTF-8"
 LC_TELEPHONE="en_US.UTF-8"
-LC_MEASUREMENT=pt_BR.UTF-8
+LC_MEASUREMENT="pt_BR.UTF-8"
 LC_IDENTIFICATION="en_US.UTF-8"
 export LANG LC_TYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
 
@@ -40,7 +56,7 @@ YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:v
 export YAOURT_COLORS
 
 export PS1
-PS1="\[$bold\][\[$blue\]\[$bold\]\u\[$reset\]\[$bold\]@\[$bold\]\[$green\]\h \[$bold\]\[$red\]\A \[$magenta\]\[$bold\]\W\[$reset\]\[$bold\]]\[$bold\]:\\$\[$(tput sgr0)\] "
+PS1="\[$bold\][\[$blue\]\[$bold\]\u\[$reset\]\[$bold\]@\[$bold\]\[$green\]\h \[$bold\]\[$red\]\A \[$magenta\]\[$bold\]\W\[$reset\]\[$bold\]]\[$bold\]:\$\[$(tput sgr0)\] "
 
 #export TERM=gnome
 
@@ -90,10 +106,14 @@ comp32 () {
 }
 
 docker-cleasing () {
-    docker kill "$(docker ps -q)"
-    docker rm -v -f "$(docker ps -a -q -f status=exited)"
-    docker rmi -f "$(docker images -a -q)"
-    docker volume rm "$(docker volume ls -qf dangling=true)"
+# shellcheck disable=SC2046
+    docker kill $(docker ps -q)
+# shellcheck disable=SC2046
+    docker rm -v -f $(docker ps -a -q -f status=exited)
+# shellcheck disable=SC2046
+    docker rmi -f $(docker images -a -q)
+# shellcheck disable=SC2046
+    docker volume rm $(docker volume ls -qf dangling=true)
     sudo rm -rf /var/lib/docker/tmp/*
 }
 
