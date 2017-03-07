@@ -58,8 +58,6 @@ export YAOURT_COLORS
 PS1="\[$bold\][\[$blue\]\u\[$white\]@\[$green\]\h \[$red\]\A \[$magenta\]\W\[$white\]]:\$\[$reset\] "
 export PS1
 
-#export TERM=gnome
-
 # ALIASES
 alias ls='ls --color=auto'
 alias grep='grep --color=always'
@@ -74,7 +72,6 @@ alias bashrc="vim ~/.bashrc && source ~/.bashrc"
 alias vimrc="vim ~/.vimrc"
 alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
 alias docker="btime docker"
-alias docker-ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}' \${CID}"
 
 # FUNCTIONS
 extract () {
@@ -164,11 +161,14 @@ export HISTFILESIZE=50000
 export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 
 # avoid duplicates..
+# Comandos iguais não são adicionados e 
 export HISTCONTROL=ignoredups:erasedups
 
 # append history entries..
+# Sempre concatena os comandos inseridos no bash_history
 shopt -s histappend
 
 # After each command, save and reload history
+# Após cada comando, o bash_history é salvo e "relido"
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
