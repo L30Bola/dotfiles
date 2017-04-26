@@ -161,12 +161,16 @@ export HISTFILESIZE=50000
 export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 
 # avoid duplicates..
-# Comandos iguais não são adicionados e 
+# Comandos iguais não são adicionados e adicionados ao histórico
 export HISTCONTROL=ignoredups:erasedups
 
 # append history entries..
 # Sempre concatena os comandos inseridos no bash_history
 shopt -s histappend
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
 
 # After each command, save and reload history
 # Após cada comando, o bash_history é salvo e "relido"
