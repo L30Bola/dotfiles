@@ -14,6 +14,7 @@ inoremap <F3> <C-O>:set invnumber<CR>
 
 syntax on
 filetype plugin indent on
+set background=dark
 
 " vim-latex-live-preview settings
 autocmd Filetype tex setl updatetime=1
