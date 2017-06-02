@@ -115,6 +115,23 @@ docker-cleasing () {
     sudo rm -rf /var/lib/docker/tmp/*
 }
 
+function countdown() {
+    datesecstoend=$(( $(date +%s) + $1 )) 
+    while [ "$datesecstoend" -ge "$(date +%s)" ]; do 
+        echo -ne "$(date -u --date @$(( datesecstoend - $(date +%s) )) +%H:%M:%S)\r"
+        sleep 0.1
+    done
+}
+
+function stopwatch() {
+    datesecs=$(date +%s)
+    while true; do 
+        echo -ne "$(date -u --date @$(( $(date +%s) - datesecs )) +%H:%M:%S)\r"
+        sleep 0.1
+    done
+}
+
+# END FUNCTIONS
 
 case ${TERM} in
   xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
