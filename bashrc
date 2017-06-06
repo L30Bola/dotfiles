@@ -190,6 +190,9 @@ shopt -s histappend
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# Verifica o comando do histórico sem utilizá-lo antes
+shopt -s histverify
+
 # After each command, save and reload history
 # Após cada comando, o bash_history é salvo e "relido"
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
