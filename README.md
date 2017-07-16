@@ -25,12 +25,12 @@ vim-tmux: https://github.com/tmux-plugins/vim-tmux <br>
 Assumindo que você clone no seu `~/.vim`:
 ```bash
 git clone https://github.com/L30Bola/dotfiles.git ~/.vim OU git clone git@github.com:L30Bola/dotfiles.git ~/.vim
-cd ~/.vim
 ln -s ~/.vim/vimrc ~/.vimrc
 ln -s ~/.vim/bashrc ~/.bashrc
 ln -s ~/.vim/tmux.conf ~/.tmux.conf
 ln -s ~/.vim/tmux ~/.tmux
 ln -s ~/.vim/bash_profile ~/.bash_profile
+cd ~/.vim
 git submodule init
 git submodule update --recursive
 ```
