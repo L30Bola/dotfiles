@@ -48,7 +48,8 @@ export PYTHONSTARTUP=~/.pythonrc
 
 # Use bash-completion, if available
 # shellcheck disable=SC1091
-[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
+[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
+    . /usr/share/bash-completion/bash_completion
 
 LS_COLORS="di=1;34;40:ln=1;35;40:so=1;32;40:pi=1;33;40:ex=1;31;40:bd=1;34;46:cd=1;0;44:su=1;0;41:sg=1;0;46:tw=1;0;42:ow=1;0;43:"
 export LS_COLORS
@@ -197,3 +198,4 @@ shopt -s histverify
 # Após cada comando, o bash_history é salvo e "relido"
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
+export PATH="$PATH:/opt/mssql-tools/bin"

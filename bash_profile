@@ -6,14 +6,13 @@ if [ -f ~/.bashrc ]; then
 fi
 
 if [ -n "$SSH_AUTH_SOCK" ] ; then
-    eval "$(/usr/bin/ssh-agent -k)"
+    eval "$(ssh-agent -k)"
 fi
 
 if [ -z "$SSH_AUTH_SOCK" ] ; then
     eval "$(ssh-agent -s)"
     ssh-add
 fi
-
 
 # User specific environment and startup programs
 
