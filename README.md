@@ -34,6 +34,10 @@ cd ~/.vim
 git submodule init
 git submodule update --recursive
 ```
+Ou simplesmente execute o prepareHome.sh, que faz exatamente a mesma coisa:
+```
+~/.vim/prepareHome.sh
+```
 
 E atualizar os plugins do ViM / TMUX:
 ```bash
