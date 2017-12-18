@@ -1,0 +1,8 @@
+[user]
+        name="Leonardo Godoy"
+        email="leonardoggavellar@gmail.com"
+        username="L30Bola"
+[core]
+        editor=vim
+[web]
+        browser=google-chrome
