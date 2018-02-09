@@ -1,31 +1,34 @@
-# shellcheck disable=SC2034
-reset=$(tput sgr0)
-# shellcheck disable=SC2034
-bold=$(tput bold)
-# shellcheck disable=SC2034
-red=$(tput setaf 1)
-# shellcheck disable=SC2034
-green=$(tput setaf 2)
-# shellcheck disable=SC2034
-lime_yellow=$(tput setaf 190)
-# shellcheck disable=SC2034
-yellow=$(tput setaf 3)
-# shellcheck disable=SC2034
-powder_blue=$(tput setaf 153)
-# shellcheck disable=SC2034
-blue=$(tput setaf 4)
-# shellcheck disable=SC2034
-magenta=$(tput setaf 5)
-# shellcheck disable=SC2034
-cyan=$(tput setaf 6)
-# shellcheck disable=SC2034
-white=$(tput setaf 7)
-# shellcheck disable=SC2034
-blink=$(tput blink)
-# shellcheck disable=SC2034
-reverse=$(tput smso)
-# shellcheck disable=SC2034
-underline=$(tput smul)
+
+if [[ $- == *i* ]]; then
+    # shellcheck disable=SC2034
+    reset=$(tput sgr0)
+    # shellcheck disable=SC2034
+    bold=$(tput bold)
+    # shellcheck disable=SC2034
+    red=$(tput setaf 1)
+    # shellcheck disable=SC2034
+    green=$(tput setaf 2)
+    # shellcheck disable=SC2034
+    lime_yellow=$(tput setaf 190)
+    # shellcheck disable=SC2034
+    yellow=$(tput setaf 3)
+    # shellcheck disable=SC2034
+    powder_blue=$(tput setaf 153)
+    # shellcheck disable=SC2034
+    blue=$(tput setaf 4)
+    # shellcheck disable=SC2034
+    magenta=$(tput setaf 5)
+    # shellcheck disable=SC2034
+    cyan=$(tput setaf 6)
+    # shellcheck disable=SC2034
+    white=$(tput setaf 7)
+    # shellcheck disable=SC2034
+    blink=$(tput blink)
+    # shellcheck disable=SC2034
+    reverse=$(tput smso)
+    # shellcheck disable=SC2034
+    underline=$(tput smul)
+fi
 
 LANG="en_US.UTF-8"
 LC_CTYPE="en_US.UTF-8"
@@ -70,26 +73,129 @@ alias netalyzr="java -jar ~/.NetalyzrCLI.jar"
 alias apgdiff="java -jar ~/.apgdiff-2.4.jar"
 alias tmux="tmux -2"
 alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias meuip="curl https://ipinfo.io/ip"
 alias bashrc="vim ~/.bashrc && source ~/.bashrc"
+alias bashHist="vim ~/.bash_history"
 alias vimrc="vim ~/.vimrc"
 alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
 alias docker="btime docker"
 
 # FUNCTIONS
-extract () {
+
+function md5CrtlC() {
+    echo -n "$1" | md5sum | awk '{ printf $1 }' | xsel -bi
+}
+
+function transfer() {
+    if [ ! "$(command -v curl 2> /dev/null)" ]; then
+        echo "cURL is not installed. Exiting...";
+        return 1
+    fi
+
+    # check arguments
+    if [ $# -eq 0 ]; then 
+        printf "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md\n"
+        return 1
+    fi
+
+    # get temporarily filename, output is written to this file show progress can be showed
+    tmpfile=$(mktemp -t transferXXX)
+    
+    # upload stdin or file
+    file=$1
+
+    if tty -s; then 
+        basefile=$(basename "$file" | sed -e 's/[^a-zA-Z0-9._-]/-/g') 
+
+        if [ ! -e "$file" ]; then
+            echo "File $file doesn't exists."
+            return 1
+        fi
+        
+        if [ -d "$file" ]; then
+            # zip directory and transfer
+            zipfile=$(mktemp -t transferXXX.zip)
+            cd "$(dirname "$file")" && zip -r -q - "$(basename "$file")" >> "$zipfile"
+            curl --progress-bar --upload-file "$zipfile" "https://transfer.sh/$basefile.zip" >> "$tmpfile"
+            rm -f "$zipfile"
+        else
+            # transfer file
+            curl --progress-bar --upload-file "$file" "https://transfer.sh/$basefile" >> "$tmpfile"
+        fi
+    else 
+        # transfer pipe
+        curl --progress-bar --upload-file "-" "https://transfer.sh/$file" >> "$tmpfile"
+    fi
+   
+    # cat output link
+    cat "$tmpfile"
+
+    # cleanup
+    rm -f "$tmpfile"
+}
+
+function transfer-capgov() {
+    if [ ! "$(command -v curl 2> /dev/null)" ]; then
+        echo "cURL is not installed. Exiting...";
+        return 1
+    fi
+
+    # check arguments
+    if [ $# -eq 0 ]; then 
+        printf "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md\n"
+        return 1
+    fi
+
+    # get temporarily filename, output is written to this file show progress can be showed
+    tmpfile=$(mktemp -t transferXXX)
+    
+    # upload stdin or file
+    file=$1
+
+    if tty -s; then 
+        basefile=$(basename "$file" | sed -e 's/[^a-zA-Z0-9._-]/-/g') 
+
+        if [ ! -e "$file" ]; then
+            echo "File $file doesn't exists."
+            return 1
+        fi
+        
+        if [ -d "$file" ]; then
+            # zip directory and transfer
+            zipfile=$(mktemp -t transferXXX.zip)
+            cd "$(dirname "$file")" && zip -r -q - "$(basename "$file")" >> "$zipfile"
+            curl --progress-bar --upload-file "$zipfile" "http://lisa.capgov.cos.ufrj.br:8080/$basefile.zip" >> "$tmpfile"
+            rm -f "$zipfile"
+        else
+            # transfer file
+            curl --progress-bar --upload-file "$file" "http://lisa.capgov.cos.ufrj.br:8080/$basefile" >> "$tmpfile"
+        fi
+    else 
+        # transfer pipe
+        curl --progress-bar --upload-file "-" "http://lisa.capgov.cos.ufrj.br:8080/$file" >> "$tmpfile"
+    fi
+   
+    # cat output link
+    cat "$tmpfile"
+
+    # cleanup
+    rm -f "$tmpfile"
+}
+
+function extract () {
   if [ -f "$1" ] ; then
     case $1 in
-      *.tar.bz2)   tar xjf "$1"   ;;
-      *.tar.gz)    tar xzf "$1"   ;;
-      *.bz2)       bunzip2 "$1"   ;;
+      *.tar.bz2)   tar xjf "$1"     ;;
+      *.tar.gz)    tar xzf "$1"     ;;
+      *.bz2)       bunzip2 "$1"     ;;
       *.rar)       unrar x "$1"     ;;
-      *.gz)        gunzip "$1"    ;;
-      *.tar)       tar xf "$1"    ;;
-      *.tbz2)      tar xjf "$1"   ;;
-      *.tgz)       tar xzf "$1"   ;;
-      *.zip)       unzip "$1"     ;;
-      *.Z)         uncompress "$1" ;;
-      *.7z)        7z x "$1"      ;;
+      *.gz)        gunzip "$1"      ;;
+      *.tar)       tar xf "$1"      ;;
+      *.tbz2)      tar xjf "$1"     ;;
+      *.tgz)       tar xzf "$1"     ;;
+      *.zip)       unzip "$1"       ;;
+      *.Z)         uncompress "$1"  ;;
+      *.7z)        7z x "$1"        ;;
       *)           echo "'$1' cannot be extracted via extract()" ;;
     esac
   else
@@ -97,14 +203,14 @@ extract () {
   fi
 }
 
-comp32 () { 
+function comp32() { 
     gcc -m32 -E -o "${1%.*}".i "$1"
     gcc -m32 -S -o "${1%.*}".s "${1%.*}".i
     gcc -m32 -c -o "${1%.*}".o "${1%.*}".s
     gcc -m32 -o "${1%.*}" "${1%.*}".o
 }
 
-docker-cleasing () {
+function docker-cleasing() {
 # shellcheck disable=SC2046
     docker kill $(docker ps -q)
 # shellcheck disable=SC2046
