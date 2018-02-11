@@ -2,69 +2,100 @@
 
 set -e 
 
-declare force=false
-declare -a to_be_linked
-files_to_be_linked=( "bash_profile" "bashrc" "gitconfig" "pythonrc" "tmux.conf" "vimrc" )
+declare force
+force=false
+
+declare -a files_to_be_linked dirs_to_be_linked
+files_to_be_linked=( "bash_profile" "bashrc" "gitconfig" "pythonrc" "tmux.conf" "vimrc" "mailrc" )
 dirs_to_be_linked=( "tmux" )
+
+declare -i i j k 
 
 function getScriptAbsolutePath() {
     (
     unset CDPATH
     scriptDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-    echo "${scriptDir}"
+    printf "${scriptDir}\n"
     ) 
 }
 
-function makeSymLinkAtHomeDir() { 
-    scriptDir=$(getScriptAbsolutePath)
+scriptDir=$(getScriptAbsolutePath)
 
+function makeSymLinkAtHomeDir() { 
     if [ "${force}" = true ]; then
         ln -fs "${scriptDir}"/"${1}" "${HOME}"/."${1}"
+        printf "Link from ${scriptDir}/${1} created at ${HOME}/.${1}\n"
     else
-        while [ -f "${HOME}"/."${1}" ]; do
-            read -pr "${HOME}/.${1} already exists. Overwrite? (y/N)" substitute
+        if [ -f "${HOME}"/."${1}" ]; then
+            printf "${HOME}/.${1} already exists. Overwrite? (y/N)\n" 
+            read -r substitute
             substitute=${substitute:-N}
             if [ "${substitute}" = "n" ] || [ "${substitute}" = "N" ]; then
-                echo "${HOME}/.${1} was not overwritten."
-                break
+                printf "${HOME}/.${1} was not overwritten.\n"
             elif [ "${substitute}" = "y" ] || [ "${substitute}" = "Y" ]; then
                 ln -fs "${scriptDir}"/"${1}" "${HOME}"/."${1}"
-                echo "${HOME}/.${1} overwritten."
-                break
+                printf "${HOME}/.${1} overwritten."
             else
-                echo "'${substitute}' isn't a recognized option."
+                printf "'${substitute}' isn't a recognized option."
             fi
-        done
+        else
+            force=true
+            makeSymLinkAtHomeDir "${1}"
+            force=false
+        fi
     fi
 }
 
 for file in "${files_to_be_linked[@]}"; do
     if [ ! -f ./"${file}" ]; then
-        echo "./${file} does not exist."
+        printf "File ${scriptDir}/${file} does not exist."
         exit 1
     fi
 done
 
 for dir in "${dirs_to_be_linked[@]}"; do
     if [ ! -d ./"${dir}" ]; then
-        echo "./${dir} does not exist."
+        printf "Directory ${scriptDir}/${dir} does not exist."
         exit 1
     fi
 done
 
-echo "Files to be linked:"
+printf "Files to be linked:"
 for ((i=0; i < "${#files_to_be_linked[@]}"; i++)); do
-    echo "[${i}]: ${files_to_be_linked[${i}]}"
+    printf "[${i}]: ${files_to_be_linked[${i}]}"
 done
 
-echo "Directories to be linked:"
+printf "Directories to be linked:"
 for ((j=0; j < "${#dirs_to_be_linked[@]}"; j++)); do
-    echo "[${j}]: ${dirs_to_be_linked[${j}]}"
+    let k=i+j
+    printf "[${k}]: ${dirs_to_be_linked[${j}]}"
 done
 
+let k=i+j
+printf
+printf "[${k}]: All options above"
+printf
 
-echo "Which option would you like to create a link in your home directory?"
-#read -pr "Or would you like to create a like to a like to all options?" option
+printf "Which option would you like to create a link in your home directory?"
+printf "Or would you like to create a like to a like to all options?"
+
+while IFS= read -r option; do
+    if [ "${option}" -eq "${k}" ]; then
+        force=true
+        for ((i=0; i < "${#files_to_be_linked[@]}"; i++)); do
+            makeSymLinkAtHomeDir "${files_to_be_linked[${i}]}"
+        done
+        for ((j=0; j < "${#dirs_to_be_linked[@]}"; j++)); do
+            makeSymLinkAtHomeDir "${dirs_to_be_linked[${j}]}"
+        done
+        break
+    else
+        if [ "${option}" -gt ${k} ]; then
+            printf "${option} is not a valid choice."
+            break
+        fi
+    fi
+done
 
 #ln -s ~/.vim/vimrc ~/.vimrc
 #ln -s ~/.vim/bashrc ~/.bashrc
