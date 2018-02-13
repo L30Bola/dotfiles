@@ -24,7 +24,7 @@ vim-tmux: https://github.com/tmux-plugins/vim-tmux <br>
 
 Assumindo que você clone no seu `~/.vim`:
 ```bash
-git clone https://github.com/L30Bola/dotfiles.git ~/.vim OU git clone git@github.com:L30Bola/dotfiles.git ~/.vim
+git clone git@github.com:L30Bola/dotfiles.git ~/.vim || git clone https://github.com/L30Bola/dotfiles.git ~/.vim
 ln -s ~/.vim/vimrc ~/.vimrc
 ln -s ~/.vim/bashrc ~/.bashrc
 ln -s ~/.vim/tmux.conf ~/.tmux.conf
