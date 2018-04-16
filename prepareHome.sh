@@ -133,7 +133,6 @@ while IFS= read -rp "> " option; do
         for ((j=0; j < "${#dirs_to_be_linked[@]}"; j++)); do
             makeSymLinkAtHomeDir "${dirs_to_be_linked[${j}]}"
         done
-        break
     else
         if [ "${option}" -gt ${k} ] || [ "${option}" -lt "$(( i - i ))" ]; then
             printf "%s is not a valid choice.\\n" "${option}"
