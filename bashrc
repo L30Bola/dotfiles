@@ -1,32 +1,20 @@
+# shellcheck disable=SC1117 
+# shellcheck disable=SC2034
 
 if [[ $- == *i* ]]; then
-    # shellcheck disable=SC2034
     reset=$(tput sgr0)
-    # shellcheck disable=SC2034
     bold=$(tput bold)
-    # shellcheck disable=SC2034
     red=$(tput setaf 1)
-    # shellcheck disable=SC2034
     green=$(tput setaf 2)
-    # shellcheck disable=SC2034
     lime_yellow=$(tput setaf 190)
-    # shellcheck disable=SC2034
     yellow=$(tput setaf 3)
-    # shellcheck disable=SC2034
     powder_blue=$(tput setaf 153)
-    # shellcheck disable=SC2034
     blue=$(tput setaf 4)
-    # shellcheck disable=SC2034
     magenta=$(tput setaf 5)
-    # shellcheck disable=SC2034
     cyan=$(tput setaf 6)
-    # shellcheck disable=SC2034
     white=$(tput setaf 7)
-    # shellcheck disable=SC2034
     blink=$(tput blink)
-    # shellcheck disable=SC2034
     reverse=$(tput smso)
-    # shellcheck disable=SC2034
     underline=$(tput smul)
 fi
 
