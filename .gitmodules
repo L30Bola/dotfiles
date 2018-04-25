@@ -46,6 +46,3 @@
 [submodule "bundle/Dockerfile"]
 	path = bundle/Dockerfile
 	url = git@github.com:ekalinin/Dockerfile.vim.git
-[submodule "bundle/jedi-vim"]
-	path = bundle/jedi-vim
-	url = git@github.com:davidhalter/jedi-vim.git
