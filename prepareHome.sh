@@ -61,10 +61,10 @@ function makeSymLinkAtHomeDir() {
 }
 
 function chooseBetweenHTTPSOrGitForSubmodulesURLProtocol() {
-    if [ "${chosenGitSubmoduleURLProtocol}" == "https" ]; then
+    if [ "${chosenGitSubmoduleURLProtocol,,}" == "https" ]; then
         sed -i "s|git@github.com:|https://github.com|g" "${absoluteScriptDir}"/.gitmodules
         sed -i "s|git@github.com:|https://github.com|g" "${absoluteScriptDir}"/.git/config
-    else
+    elif [ "${chosenGitSubmoduleURLProtocol,,}" == "git" ]; then
         sed -i "s|https://github.com|git@github.com:|g" "${absoluteScriptDir}"/.gitmodules
         sed -i "s|https://github.com|git@github.com:|g" "${absoluteScriptDir}"/.git/config
     fi
@@ -78,7 +78,7 @@ function cloneGitSubmodules() {
 
 function control_c() {
     trap - SIGINT
-    printf "Which protocol do you prefer to use to clone Submodules, "
+    printf "\\nWhich protocol do you prefer to use to clone Submodules, "
     printf "HTTPS or Git?\\n"
     printf "Press Ctrl + C to exit.\\n"
     while IFS= read -rp "> " chosenGitSubmoduleURLProtocol; do
@@ -87,6 +87,7 @@ function control_c() {
         else
             chooseBetweenHTTPSOrGitForSubmodulesURLProtocol
             cloneGitSubmodules
+            exit 0
         fi
     done
 }
