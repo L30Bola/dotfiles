@@ -22,39 +22,40 @@ function getScriptAbsoluteDir() {
 absoluteScriptDir=$(getScriptAbsoluteDir)
 
 function makeSymLinkAtHomeDir() { 
+    local toBeLinked="${1}"
     if [ "${force}" = true ]; then
-        ln -fs "${absoluteScriptDir}"/"${1}" "${HOME}"/."${1}"
-        printf "Link from %s/%s created at %s/.%s\\n" "${absoluteScriptDir}" "${1}" "${HOME}" "${1}"
+        ln -fs "${absoluteScriptDir}"/"${toBeLinked}" "${HOME}"/."${toBeLinked}"
+        printf "Link from %s/%s created at %s/.%s\\n" "${absoluteScriptDir}" "${toBeLinked}" "${HOME}" "${toBeLinked}"
     else
-        if [ -f "${HOME}"/."${1}" ]; then
-            printf "File %s/.%s already exists. Overwrite? (y/N)\\n" "${HOME}" "${1}" 
+        if [ -f "${HOME}"/."${toBeLinked}" ]; then
+            printf "File %s/.%s already exists. Overwrite? (y/N)\\n" "${HOME}" "${toBeLinked}" 
             read -r substitute
             substitute=${substitute:-N}
             if [ "${substitute}" = "n" ] || [ "${substitute}" = "N" ]; then
-                printf "%s/.%s was not overwritten.\\n" "${HOME}" "${1}"
+                printf "%s/.%s was not overwritten.\\n" "${HOME}" "${toBeLinked}"
             elif [ "${substitute}" = "y" ] || [ "${substitute}" = "Y" ]; then
-                ln -fs "${absoluteScriptDir}"/"${1}" "${HOME}"/."${1}"
-                printf "%s/.%s overwritten.\\n" "${HOME}" "${1}"
+                ln -fs "${absoluteScriptDir}"/"${toBeLinked}" "${HOME}"/."${toBeLinked}"
+                printf "%s/.%s overwritten.\\n" "${HOME}" "${toBeLinked}"
             else
                 printf "'%s' isn't a recognized option.\\n" "${substitute}"
             fi
-        elif [ -d "${HOME}"/."${1}" ]; then
-            printf "Directory %s/.%s already exists. Rename? (y/N)\\n" "${HOME}" "${1}" 
+        elif [ -d "${HOME}"/."${toBeLinked}" ]; then
+            printf "Directory %s/.%s already exists. Rename? (y/N)\\n" "${HOME}" "${toBeLinked}" 
             read -r substitute
             substitute=${substitute:-N}
             if [ "${substitute}" = "n" ] || [ "${substitute}" = "N" ]; then
-                printf "%s/.%s was not renamed.\\n" "${HOME}" "${1}"
+                printf "%s/.%s was not renamed.\\n" "${HOME}" "${toBeLinked}"
             elif [ "${substitute}" = "y" ] || [ "${substitute}" = "Y" ]; then
-                mv "${HOME}"/."${1}" "${HOME}"/."${1}".old
-                printf "%s/.%s renamed to %s/.%s.old\\n" "${HOME}" "${1}" "${HOME}" "${1}"
-                ln -fs "${absoluteScriptDir}"/"${1}" "${HOME}"/."${1}"
-                printf "Link from %s/%s created at %s/.%s\\n" "${absoluteScriptDir}" "${1}" "${HOME}" "${1}"
+                mv "${HOME}"/."${toBeLinked}" "${HOME}"/."${toBeLinked}".old
+                printf "%s/.%s renamed to %s/.%s.old\\n" "${HOME}" "${toBeLinked}" "${HOME}" "${toBeLinked}"
+                ln -fs "${absoluteScriptDir}"/"${toBeLinked}" "${HOME}"/."${toBeLinked}"
+                printf "Link from %s/%s created at %s/.%s\\n" "${absoluteScriptDir}" "${toBeLinked}" "${HOME}" "${toBeLinked}"
             else
                 printf "'%s' isn't a recognized option.\\n" "${substitute}"
             fi
         else
             force=true
-            makeSymLinkAtHomeDir "${1}"
+            makeSymLinkAtHomeDir "${toBeLinked}"
             force=false
         fi
     fi
@@ -95,14 +96,14 @@ function control_c() {
 for file in "${files_to_be_linked[@]}"; do
     if [ ! -f "${absoluteScriptDir}"/"${file}" ]; then
         printf "File %s/%s does not exist inside ${absoluteScriptDir}.\\n" "${absoluteScriptDir}" "${file}"
-        exit 1
+        exit 13
     fi
 done
 
 for dir in "${dirs_to_be_linked[@]}"; do
     if [ ! -d "${absoluteScriptDir}"/"${dir}" ]; then
         printf "Directory %s/%s does not exist inside ${absoluteScriptDir}.\\n" "${absoluteScriptDir}" "${dir}"
-        exit 2
+        exit 14
     fi
 done
 
@@ -138,10 +139,10 @@ while IFS= read -rp "> " option; do
         if [ "${option}" -gt ${k} ] || [ "${option}" -lt "$(( i - i ))" ]; then
             printf "%s is not a valid choice.\\n" "${option}"
             printf "It must be between %i and %s.\\n" "$(( i - i ))" "${k}"
-        elif [ "${option}" -ge "$(( i - i ))" ] && [ "${option}" -le "${i}" ]; then
+        elif [ "${option}" -ge "$(( i - i ))" ] && [ "${option}" -lt "${i}" ]; then
             makeSymLinkAtHomeDir "${files_to_be_linked[${option}]}"
-        elif [ "${option}" -gt "${i}" ] && [ "${option}" -lt "${k}" ]; then
-            (( option=option-i ))
+        elif [ "${option}" -ge "${i}" ] && [ "${option}" -lt "${k}" ]; then
+            option=$(( option - i ))
             makeSymLinkAtHomeDir "${dirs_to_be_linked[${option}]}"
         fi
     fi
