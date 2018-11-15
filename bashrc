@@ -122,54 +122,6 @@ function transfer() {
     rm -f "$tmpfile"
 }
 
-function transfer-capgov() {
-    if [ ! "$(command -v curl 2> /dev/null)" ]; then
-        echo "cURL is not installed. Exiting...";
-        return 1
-    fi
-
-    # check arguments
-    if [ $# -eq 0 ]; then 
-        printf "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md\n"
-        return 1
-    fi
-
-    # get temporarily filename, output is written to this file show progress can be showed
-    tmpfile=$(mktemp -t transferXXX)
-    
-    # upload stdin or file
-    file=$1
-
-    if tty -s; then 
-        basefile=$(basename "$file" | sed -e 's/[^a-zA-Z0-9._-]/-/g') 
-
-        if [ ! -e "$file" ]; then
-            echo "File $file doesn't exists."
-            return 1
-        fi
-        
-        if [ -d "$file" ]; then
-            # zip directory and transfer
-            zipfile=$(mktemp -t transferXXX.zip)
-            cd "$(dirname "$file")" && zip -r -q - "$(basename "$file")" >> "$zipfile"
-            curl --progress-bar --upload-file "$zipfile" "http://lisa.capgov.cos.ufrj.br:8080/$basefile.zip" >> "$tmpfile"
-            rm -f "$zipfile"
-        else
-            # transfer file
-            curl --progress-bar --upload-file "$file" "http://lisa.capgov.cos.ufrj.br:8080/$basefile" >> "$tmpfile"
-        fi
-    else 
-        # transfer pipe
-        curl --progress-bar --upload-file "-" "http://lisa.capgov.cos.ufrj.br:8080/$file" >> "$tmpfile"
-    fi
-   
-    # cat output link
-    cat "$tmpfile"
-
-    # cleanup
-    rm -f "$tmpfile"
-}
-
 function extract () {
   if [ -f "$1" ] ; then
     case $1 in
@@ -226,6 +178,17 @@ function stopwatch() {
     done
 }
 
+function __notification_prompt_command() { 
+    local lastcommand
+    lastcommand=$(HISTTIMEFORMAT='' history 1 | sed 's/^ *[0-9]\+ *//')
+    lastcommand="${lastcommand//;/ }"
+    printf "\033]777;notify;Command completed;%s\007" "${lastcommand}"
+}
+
+function generateUnicastMacAddress() {
+    od -An -N6 -tx1 /dev/urandom | sed -e 's/^  *//' -e 's/  */:/g' -e 's/:$//' -e 's/^\(.\)[13579bdf]/\10/'
+}
+
 # END FUNCTIONS
 
 case ${TERM} in
@@ -264,10 +227,18 @@ esac
 ## BASH configs
 
 # Number of lines or commands to be added to history file
-export HISTSIZE=50000
+if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || ( [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]] ); then
+    export HISTSIZE=-1
+else
+    export HISTSIZE=
+fi
 
 # Number of lines or commands that are allowed to be stored on history file
-export HISTFILESIZE=50000
+if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || ( [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]] ); then
+    export HISTFILESIZE=-1
+else
+    export HISTFILESIZE=
+fi
 
 # Date and time added to history before each command is written on the history file
 # It's formatted as: year/month/day - hour:minute:second
@@ -275,7 +246,7 @@ export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 
 # avoid duplicates..
 # Comandos iguais não são adicionados e adicionados ao histórico
-export HISTCONTROL=ignoredups:erasedups
+export HISTCONTROL=ignoreboth:erasedups
 
 # append history entries..
 # Sempre concatena os comandos inseridos no bash_history
@@ -290,6 +261,14 @@ shopt -s histverify
 
 # After each command, save and reload history
 # Após cada comando, o bash_history é salvo e "relido"
+# Alguns programas não conseguem resolver essa variável
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 export PATH="$PATH:/opt/mssql-tools/bin"
+
+### Bashhub.com Installation.
+### This Should be at the EOF. https://bashhub.com/docs
+if [ -f ~/.bashhub/bashhub.sh ]; then
+    source ~/.bashhub/bashhub.sh
+fi
+
