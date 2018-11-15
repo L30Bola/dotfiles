@@ -189,6 +189,10 @@ function generateUnicastMacAddress() {
     od -An -N6 -tx1 /dev/urandom | sed -e 's/^  *//' -e 's/  */:/g' -e 's/:$//' -e 's/^\(.\)[13579bdf]/\10/'
 }
 
+function copy2Clipboard() {
+    cat "$@" | xsel -bi
+}
+
 # END FUNCTIONS
 
 case ${TERM} in
