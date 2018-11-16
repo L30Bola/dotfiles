@@ -231,14 +231,14 @@ esac
 ## BASH configs
 
 # Number of lines or commands to be added to history file
-if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || ( [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]] ); then
+if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || { [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]]; }; then
     export HISTSIZE=-1
 else
     export HISTSIZE=
 fi
 
 # Number of lines or commands that are allowed to be stored on history file
-if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || ( [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]] ); then
+if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || { [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]]; }; then
     export HISTFILESIZE=-1
 else
     export HISTFILESIZE=
