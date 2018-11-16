@@ -42,3 +42,15 @@
 [submodule "bundle/Dockerfile"]
 	path = bundle/Dockerfile
 	url = git@github.com:ekalinin/Dockerfile.vim.git
+[submodule "bundle/vim-eunuch"]
+	path = bundle/vim-eunuch
+	url = git@github.com:tpope/vim-eunuch.git
+[submodule "bundle/vim-surround"]
+	path = bundle/vim-surround
+	url = git@github.com:tpope/vim-surround.git
+[submodule "bundle/vim-fugitive"]
+	path = bundle/vim-fugitive
+	url = git@github.com:tpope/vim-fugitive.git
+[submodule "bundle/vim-tbone"]
+	path = bundle/vim-tbone
+	url = git@github.com:tpope/vim-tbone.git

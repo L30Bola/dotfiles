@@ -46,6 +46,7 @@ inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
 " END: auto paste-mode when pasting in INSERT mode with support for TMUX
 
 " syntastic
+set statusline+=%{FugitiveStatusline()}
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
