@@ -1,7 +1,3 @@
-[submodule "bundle/vim-latex-live-preview"]
-	path = bundle/vim-latex-live-preview
-	url = git@github.com:xuhdev/vim-latex-live-preview.git
-        ignore = dirty
 [submodule "tmux/plugins/tmux-battery"]
 	path = tmux/plugins/tmux-battery
 	url = git@github.com:tmux-plugins/tmux-battery.git
