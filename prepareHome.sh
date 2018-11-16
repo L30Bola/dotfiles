@@ -63,11 +63,11 @@ function makeSymLinkAtHomeDir() {
 
 function chooseBetweenHTTPSOrGitForSubmodulesURLProtocol() {
     if [ "${chosenGitSubmoduleURLProtocol,,}" == "https" ]; then
-        sed -i "s|git@github.com:|https://github.com|g" "${absoluteScriptDir}"/.gitmodules
-        sed -i "s|git@github.com:|https://github.com|g" "${absoluteScriptDir}"/.git/config
+        sed -i "s|git@github.com:|https://github.com/|g" "${absoluteScriptDir}"/.gitmodules
+        sed -i "s|git@github.com:|https://github.com/|g" "${absoluteScriptDir}"/.git/config
     elif [ "${chosenGitSubmoduleURLProtocol,,}" == "git" ]; then
-        sed -i "s|https://github.com|git@github.com:|g" "${absoluteScriptDir}"/.gitmodules
-        sed -i "s|https://github.com|git@github.com:|g" "${absoluteScriptDir}"/.git/config
+        sed -i "s|https://github.com/|git@github.com:|g" "${absoluteScriptDir}"/.gitmodules
+        sed -i "s|https://github.com/|git@github.com:|g" "${absoluteScriptDir}"/.git/config
     fi
 }
 
@@ -135,6 +135,7 @@ while IFS= read -rp "> " option; do
         for ((j=0; j < "${#dirs_to_be_linked[@]}"; j++)); do
             makeSymLinkAtHomeDir "${dirs_to_be_linked[${j}]}"
         done
+        kill -SIGINT $$
     else
         if [ "${option}" -gt ${k} ] || [ "${option}" -lt "$(( i - i ))" ]; then
             printf "%s is not a valid choice.\\n" "${option}"
