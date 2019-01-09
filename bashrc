@@ -67,6 +67,7 @@ alias bashHist="vim ~/.bash_history"
 alias vimrc="vim ~/.vimrc"
 alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
 alias docker="btime docker"
+alias wttr="curl wttr.in"
 
 # FUNCTIONS
 
@@ -191,6 +192,10 @@ function generateUnicastMacAddress() {
 
 function copy2Clipboard() {
     cat "$@" | xsel -bi
+}
+
+function cheat-sheet() {
+    curl https://cheat.sh/"$@"
 }
 
 # END FUNCTIONS
