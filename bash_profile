@@ -16,7 +16,7 @@ fi
 
 # User specific environment and startup programs
 
-if xinput | grep --color=never "Multi-Touch"; then
+if xinput | grep --quiet --color=never "Multi-Touch"; then
     xinput disable "$(xinput | grep --color=never "Multi-Touch" | cut -c 51-52)"
 fi
 
