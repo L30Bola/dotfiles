@@ -55,3 +55,6 @@
 [submodule "bundle/vim-tbone"]
 	path = bundle/vim-tbone
 	url = git@github.com:tpope/vim-tbone.git
+[submodule "bundle/vim-pathogen"]
+	path = bundle/vim-pathogen
+	url = git@github.com:tpope/vim-pathogen.git
