@@ -9,7 +9,7 @@ declare -a files_to_be_linked dirs_to_be_linked
 files_to_be_linked=( "bash_profile" "bashrc" "gitconfig" "pythonrc" "tmux.conf" "vimrc" )
 dirs_to_be_linked=( "tmux" )
 
-declare -i i j k 
+declare -i temp1 temp2 temp3 
 
 function getScriptAbsoluteDir() {
     (
@@ -93,59 +93,84 @@ function control_c() {
     done
 }
 
-for file in "${files_to_be_linked[@]}"; do
-    if [ ! -f "${absoluteScriptDir}"/"${file}" ]; then
-        printf "File %s/%s does not exist inside ${absoluteScriptDir}.\\n" "${absoluteScriptDir}" "${file}"
-        exit 13
-    fi
-done
-
-for dir in "${dirs_to_be_linked[@]}"; do
-    if [ ! -d "${absoluteScriptDir}"/"${dir}" ]; then
-        printf "Directory %s/%s does not exist inside ${absoluteScriptDir}.\\n" "${absoluteScriptDir}" "${dir}"
-        exit 14
-    fi
-done
-
-printf "Files to be linked:\\n"
-for ((i=0; i < "${#files_to_be_linked[@]}"; i++)); do
-    printf "[%s]: %s\\n" "${i}" "${files_to_be_linked[${i}]}"
-done
-
-printf "\\nDirectories to be linked:\\n"
-for ((j=0; j < "${#dirs_to_be_linked[@]}"; j++)); do
-    (( k=i+j ))
-    printf "[%s]: %s\\n" "${k}" "${dirs_to_be_linked[${j}]}"
-done
-
-(( k=i+j ))
-printf "\\n[%s]: All options above\\n" "${k}"
-trap control_c SIGINT
-printf "Press Ctrl + C to clone/update the submodules.\\n\\n"
-
-printf "Which option would you like to create a link in your home directory?\\n"
-printf "Or would you like to create a link to all options above?\\n"
-
-while IFS= read -rp "> " option; do
-    if [ "${option}" -eq "${k}" ]; then
-        force=true
-        for ((i=0; i < "${#files_to_be_linked[@]}"; i++)); do
-            makeSymLinkAtHomeDir "${files_to_be_linked[${i}]}"
-        done
-        for ((j=0; j < "${#dirs_to_be_linked[@]}"; j++)); do
-            makeSymLinkAtHomeDir "${dirs_to_be_linked[${j}]}"
-        done
-        kill -SIGINT $$
-    else
-        if [ "${option}" -gt ${k} ] || [ "${option}" -lt "$(( i - i ))" ]; then
-            printf "%s is not a valid choice.\\n" "${option}"
-            printf "It must be between %i and %s.\\n" "$(( i - i ))" "${k}"
-        elif [ "${option}" -ge "$(( i - i ))" ] && [ "${option}" -lt "${i}" ]; then
-            makeSymLinkAtHomeDir "${files_to_be_linked[${option}]}"
-        elif [ "${option}" -ge "${i}" ] && [ "${option}" -lt "${k}" ]; then
-            option=$(( option - i ))
-            makeSymLinkAtHomeDir "${dirs_to_be_linked[${option}]}"
+if [ "$#" -eq 0 ]; then
+    for file in "${files_to_be_linked[@]}"; do
+        if [ ! -f "${absoluteScriptDir}"/"${file}" ]; then
+            printf "File %s/%s does not exist inside ${absoluteScriptDir}.\\n" "${absoluteScriptDir}" "${file}"
+            exit 13
         fi
-    fi
-done
+    done
+    
+    for dir in "${dirs_to_be_linked[@]}"; do
+        if [ ! -d "${absoluteScriptDir}"/"${dir}" ]; then
+            printf "Directory %s/%s does not exist inside ${absoluteScriptDir}.\\n" "${absoluteScriptDir}" "${dir}"
+            exit 14
+        fi
+    done
+    
+    printf "Files to be linked:\\n"
+    for ((temp1=0; temp1 < "${#files_to_be_linked[@]}"; temp1++)); do
+        printf "[%s]: %s\\n" "${temp1}" "${files_to_be_linked[${temp1}]}"
+    done
+    
+    printf "\\nDirectories to be linked:\\n"
+    for ((temp2=0; temp2 < "${#dirs_to_be_linked[@]}"; temp2++)); do
+        (( temp3=temp1+temp2 ))
+        printf "[%s]: %s\\n" "${temp3}" "${dirs_to_be_linked[${temp2}]}"
+    done
+    
+    (( temp3=temp1+temp2 ))
+    printf "\\n[%s]: All options above\\n" "${temp3}"
+    trap control_c SIGINT
+    printf "Press Ctrl + C to clone/update the submodules.\\n\\n"
+    
+    printf "Which option would you like to create a link in your home directory?\\n"
+    printf "Or would you like to create a link to all options above?\\n"
 
+    while IFS= read -rp "> " option; do
+        if [ "${option}" -eq "${temp3}" ]; then
+            force=true
+            for ((temp1=0; temp1 < "${#files_to_be_linked[@]}"; temp1++)); do
+                makeSymLinkAtHomeDir "${files_to_be_linked[${temp1}]}"
+            done
+            for ((temp2=0; temp2 < "${#dirs_to_be_linked[@]}"; temp2++)); do
+                makeSymLinkAtHomeDir "${dirs_to_be_linked[${temp2}]}"
+            done
+            kill -SIGINT $$
+        else
+            if [ "${option}" -gt ${temp3} ] || [ "${option}" -lt "$(( temp1 - temp1 ))" ]; then
+                printf "%s is not a valid choice.\\n" "${option}"
+                printf "It must be between %i and %s.\\n" "$(( temp1 - temp1 ))" "${temp3}"
+            elif [ "${option}" -ge "$(( temp1 - temp1 ))" ] && [ "${option}" -lt "${temp1}" ]; then
+                makeSymLinkAtHomeDir "${files_to_be_linked[${option}]}"
+            elif [ "${option}" -ge "${temp1}" ] && [ "${option}" -lt "${temp3}" ]; then
+                option=$(( option - temp1 ))
+                makeSymLinkAtHomeDir "${dirs_to_be_linked[${option}]}"
+            fi
+        fi
+    done
+else
+    if [ "${1,,}" == "all" ] || [ "$1" -gt $(( files_to_be_linked+dirs_to_be_linked )) ]; then
+        (( temp3=files_to_be_linked+dirs_to_be_linked ))
+    elif [ "$1" -ge 0 ] && [ "$1" -le $(( files_to_be_linked+dirs_to_be_linked )) ]; then
+        temp3="$1"
+    else
+        printf "%s is not a valid value for files/dirs to be linked.\\n" "$1"
+        exit 15
+    fi
+    if [ "${2,,}" != "https" ] || [ "${2,,}" != "git" ]; then
+        chosenGitSubmoduleURLProtocol="$2"
+    else
+        printf "%s is not a valid option. Choose between HTTPS or Git.\\n" "${chosenGitSubmoduleURLProtocol}"
+        exit 16
+    fi
+
+    for ((temp1=0; temp1 < temp3; temp1++)); do
+        makeSymLinkAtHomeDir "${files_to_be_linked[${temp1}]}"
+    done
+    for ((temp2=0; temp2 < temp3; temp2++)); do
+        makeSymLinkAtHomeDir "${dirs_to_be_linked[${temp2}]}"
+    done
+    chooseBetweenHTTPSOrGitForSubmodulesURLProtocol
+    cloneGitSubmodules
+fi
