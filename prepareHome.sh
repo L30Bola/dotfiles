@@ -150,14 +150,15 @@ if [ "$#" -eq 0 ]; then
         fi
     done
 else
-    if [ "${1,,}" == "all" ] || [ "$1" -gt $(( files_to_be_linked+dirs_to_be_linked )) ]; then
-        (( temp3=files_to_be_linked+dirs_to_be_linked ))
-    elif [ "$1" -ge 0 ] && [ "$1" -le $(( files_to_be_linked+dirs_to_be_linked )) ]; then
+    if [ "${1,,}" == "all" ] || [ "$1" -gt $(( ${#files_to_be_linked}+${#dirs_to_be_linked} )) ]; then
+        temp3=${#files_to_be_linked}+${#dirs_to_be_linked}
+    elif [ "$1" -ge 0 ] && [ "$1" -le $(( ${#files_to_be_linked}+${#dirs_to_be_linked} )) ]; then
         temp3="$1"
     else
         printf "%s is not a valid value for files/dirs to be linked.\\n" "$1"
         exit 15
     fi
+
     if [ "${2,,}" != "https" ] || [ "${2,,}" != "git" ]; then
         chosenGitSubmoduleURLProtocol="$2"
     else
