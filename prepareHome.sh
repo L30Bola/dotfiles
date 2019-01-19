@@ -150,9 +150,9 @@ if [ "$#" -eq 0 ]; then
         fi
     done
 else
-    if [ "${1,,}" == "all" ] || [ "$1" -gt $(( ${#files_to_be_linked}+${#dirs_to_be_linked} )) ]; then
-        temp3=${#files_to_be_linked}+${#dirs_to_be_linked}
-    elif [ "$1" -ge 0 ] && [ "$1" -le $(( ${#files_to_be_linked}+${#dirs_to_be_linked} )) ]; then
+    if [ "${1,,}" == "all" ] || [ "$1" -gt $(( "${#files_to_be_linked[@]}"+"${#dirs_to_be_linked[@]}" )) ]; then
+        (( temp3="${#files_to_be_linked[@]}}"+"${#dirs_to_be_linked[@]}" ))
+    elif [ "$1" -ge 0 ] && [ "$1" -le $(( "${#files_to_be_linked[@]}"+"${#dirs_to_be_linked[@]}" )) ]; then
         temp3="$1"
     else
         printf "%s is not a valid value for files/dirs to be linked.\\n" "$1"
@@ -166,10 +166,10 @@ else
         exit 16
     fi
 
-    for ((temp1=0; temp1 < temp3; temp1++)); do
+    for ((temp1=0; temp1 < temp3 - "${#dirs_to_be_linked[@]}"; temp1++)); do
         makeSymLinkAtHomeDir "${files_to_be_linked[${temp1}]}"
     done
-    for ((temp2=0; temp2 < temp3; temp2++)); do
+    for ((temp2=0; temp2 < temp3 - "${#files_to_be_linked[@]}"; temp2++)); do
         makeSymLinkAtHomeDir "${dirs_to_be_linked[${temp2}]}"
     done
     chooseBetweenHTTPSOrGitForSubmodulesURLProtocol
