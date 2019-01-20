@@ -4,9 +4,20 @@ Repositório com minhas configs pessoais do vim, bash e tmux.
 
 Após clonar o repositório, devem ser feitos links simbólicos para as pastas/arquivos.
 
+#### Docker
+Imagem Docker disponível, contendo minhas dotFiles:
+```
+docker pull l30bola/dotFiles
+```
+
 ##### Plugins para o ViM:
-pathogen.vim: https://github.com/tpope/vim-pathogen <br>
-syntastic: https://github.com/vim-syntastic/syntastic
+pathogen: https://github.com/tpope/vim-pathogen <br>
+syntastic: https://github.com/vim-syntastic/syntastic <br>
+Dockerfile: https://github.com/ekalinin/Dockerfile.vim <br>
+eunuch: https://github.com/tpope/vim-eunuch <br>
+surround: https://github.com/tpope/vim-surround <br>
+fugitive: https://github.com/tpope/vim-fugitive <br>
+tbone: https://github.com/tpope/vim-tbone <br>
 
 ##### Plugin para o TMUX:
 tpm: https://github.com/tmux-plugins/tpm <br>
@@ -20,7 +31,6 @@ tmux-resurrect: https://github.com/tmux-plugins/tmux-resurrect <br>
 tmux-sensible: https://github.com/tmux-plugins/tmux-sensible <br>
 tmux-sidebar: https://github.com/tmux-plugins/tmux-sidebar <br>
 tmux-yank: https://github.com/tmux-plugins/tmux-yank <br>
-vim-tmux: https://github.com/tmux-plugins/vim-tmux <br>
 
 Assumindo que você clone no seu `~/.vim`:
 ```bash
