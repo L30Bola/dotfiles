@@ -151,8 +151,8 @@ if [ "$#" -eq 0 ]; then
     done
 else
     if [ "${1,,}" == "all" ] || [ "$1" -gt $(( "${#files_to_be_linked[@]}"+"${#dirs_to_be_linked[@]}" )) ]; then
-        (( temp3="${#files_to_be_linked[@]}"+"${#dirs_to_be_linked[@]}" ))
-    elif [ "$1" -ge 0 ] && [ "$1" -le $(( "${#files_to_be_linked[@]}"+"${#dirs_to_be_linked[@]}" )) ]; then
+        temp3=$(( "${#files_to_be_linked[@]}"+"${#dirs_to_be_linked[@]}" ))
+    elif [ "$1" -gt 0 ] && [ "$1" -le $(( "${#files_to_be_linked[@]}"+"${#dirs_to_be_linked[@]}" )) ]; then
         temp3="$1"
     else
         printf "%s is not a valid value for files/dirs to be linked.\\n" "$1"
