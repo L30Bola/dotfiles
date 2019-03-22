@@ -2,6 +2,8 @@ runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 execute pathogen#helptags()
 
+set encoding=utf-8
+set fileencoding=utf-8
 set tabstop=4
 set softtabstop=0
 set expandtab
