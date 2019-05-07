@@ -1,6 +1,8 @@
 # shellcheck disable=SC1117 
 # shellcheck disable=SC2034
 
+## ENVVARS
+
 if [[ $- == *i* ]]; then
     reset=$(tput sgr0)
     bold=$(tput bold)
@@ -16,6 +18,10 @@ if [[ $- == *i* ]]; then
     blink=$(tput blink)
     reverse=$(tput smso)
     underline=$(tput smul)
+fi
+
+if command -v gnome-keyring-daemon > /dev/null; then
+    export "$(gnome-keyring-daemon --daemonize --start)"
 fi
 
 LANG="en_US.UTF-8"
@@ -50,6 +56,8 @@ export YAOURT_COLORS
 
 PS1="\[$reset\]\[$bold\][\[$blue\]\u\[$white\]@\[$green\]\h \[$red\]\A \[$magenta\]\W\[$white\]]:\$\[$reset\] "
 export PS1
+
+## END ENVVARS
 
 # ALIASES
 alias ls='ls --color=auto'
@@ -195,7 +203,7 @@ function copy2Clipboard() {
 }
 
 function cheat-sheet() {
-    curl https://cheat.sh/"$@"
+    curl "https://cheat.sh/$@"
 }
 
 # END FUNCTIONS
@@ -273,7 +281,7 @@ shopt -s histverify
 # Alguns programas não conseguem resolver essa variável
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
-export PATH="$PATH:/opt/mssql-tools/bin"
+export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
 
 ### Bashhub.com Installation.
 ### This Should be at the EOF. https://bashhub.com/docs
