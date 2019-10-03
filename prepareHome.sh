@@ -165,6 +165,10 @@ else
         printf "%s is not a valid option. Choose between HTTPS or Git.\\n" "${chosenGitSubmoduleURLProtocol}"
         exit 16
     fi
+    
+    if [ "${3,,}" == "force" ]; then
+        force=true
+    fi
 
     for ((temp1=0; temp1 < temp3 - "${#dirs_to_be_linked[@]}"; temp1++)); do
         makeSymLinkAtHomeDir "${files_to_be_linked[${temp1}]}"
