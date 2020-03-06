@@ -48,6 +48,13 @@ export PYTHONSTARTUP=~/.pythonrc
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
 
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+fi
+
+complete -C /usr/local/bin/terraform terraform
+complete -C /usr/local/bin/mc mc
+
 LS_COLORS="di=1;34;40:ln=1;35;40:so=1;32;40:pi=1;33;40:ex=1;31;40:bd=1;34;46:cd=1;0;44:su=1;0;41:sg=1;0;46:tw=1;0;42:ow=1;0;43:"
 export LS_COLORS
 
@@ -73,7 +80,11 @@ alias meuip="curl https://ipinfo.io/ip"
 alias bashrc="vim ~/.bashrc && source ~/.bashrc"
 alias bashHist="vim ~/.bash_history"
 alias vimrc="vim ~/.vimrc"
-alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
+if uname | grep -q "Darwin"; then
+    alias btime="/usr/local/opt/gnu-time/libexec/gnubin/time --format='\n%C took %e seconds.'"
+else
+    alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
+fi
 alias docker="btime docker"
 alias wttr="curl wttr.in"
 
@@ -218,28 +229,28 @@ case ${TERM} in
     ;;
 esac
 
-case ${TERM} in
-
-    screen*)
-
-        # user command to change default pane title on demand
-        function title { TMUX_PANE_TITLE="$*"; }
-
-        # function that performs the title update (invoked as PROMPT_COMMAND)
-        function update_title { printf "\033]2;%s\033\\" "${1:-$TMUX_PANE_TITLE}"; }
-
-        # default pane title is the name of the current process (i.e. 'bash')
-        TMUX_PANE_TITLE=$(ps -o comm $$ | tail -1)
-
-        # Reset title to the default before displaying the command prompt
-        PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'update_title'   
-
-        # Update title before executing a command: set it to the command
-        trap 'update_title "$BASH_COMMAND"' DEBUG
-
-        ;;
-
-esac
+#case ${TERM} in
+#
+#    screen*)
+#
+#        # user command to change default pane title on demand
+#        function title { TMUX_PANE_TITLE="$*"; }
+#
+#        # function that performs the title update (invoked as PROMPT_COMMAND)
+#        function update_title { printf "\033]2;%s\033\\" "${1:-$TMUX_PANE_TITLE}"; }
+#
+#        # default pane title is the name of the current process (i.e. 'bash')
+#        TMUX_PANE_TITLE=$(ps -o comm $$ | tail -1)
+#
+#        # Reset title to the default before displaying the command prompt
+#        PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'update_title'   
+#
+#        # Update title before executing a command: set it to the command
+#        trap 'update_title "$BASH_COMMAND"' DEBUG
+#
+#        ;;
+#
+#esac
 
 ## BASH configs
 
@@ -281,7 +292,11 @@ shopt -s histverify
 # Alguns programas não conseguem resolver essa variável
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
-export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
+if uname | grep -q "Darwin"; then
+    export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin"
+else
+    export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
+fi
 
 ### Bashhub.com Installation.
 ### This Should be at the EOF. https://bashhub.com/docs
