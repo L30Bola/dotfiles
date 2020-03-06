@@ -1,60 +1,63 @@
 [submodule "tmux/plugins/tmux-battery"]
 	path = tmux/plugins/tmux-battery
-	url = git@github.com:tmux-plugins/tmux-battery.git
+	url = https://github.com/tmux-plugins/tmux-battery.git
 [submodule "tmux/plugins/tmux-continuum"]
 	path = tmux/plugins/tmux-continuum
-	url = git@github.com:tmux-plugins/tmux-continuum.git
+	url = https://github.com/tmux-plugins/tmux-continuum.git
 [submodule "tmux/plugins/tmux-logging"]
 	path = tmux/plugins/tmux-logging
-	url = git@github.com:tmux-plugins/tmux-logging.git
+	url = https://github.com/tmux-plugins/tmux-logging.git
 [submodule "tmux/plugins/tmux-online-status"]
 	path = tmux/plugins/tmux-online-status
-	url = git@github.com:tmux-plugins/tmux-online-status.git
+	url = https://github.com/tmux-plugins/tmux-online-status.git
         ignore = dirty
 [submodule "tmux/plugins/tmux-resurrect"]
 	path = tmux/plugins/tmux-resurrect
-	url = git@github.com:tmux-plugins/tmux-resurrect.git
+	url = https://github.com/tmux-plugins/tmux-resurrect.git
 [submodule "tmux/plugins/tmux-sensible"]
 	path = tmux/plugins/tmux-sensible
-	url = git@github.com:tmux-plugins/tmux-sensible.git
+	url = https://github.com/tmux-plugins/tmux-sensible.git
 [submodule "tmux/plugins/tmux-sidebar"]
 	path = tmux/plugins/tmux-sidebar
-	url = git@github.com:tmux-plugins/tmux-sidebar.git
+	url = https://github.com/tmux-plugins/tmux-sidebar.git
         ignore = dirty
 [submodule "tmux/plugins/tmux-yank"]
 	path = tmux/plugins/tmux-yank
-	url = git@github.com:tmux-plugins/tmux-yank.git
+	url = https://github.com/tmux-plugins/tmux-yank.git
 [submodule "tmux/plugins/tpm"]
 	path = tmux/plugins/tpm
-	url = git@github.com:tmux-plugins/tpm.git
+	url = https://github.com/tmux-plugins/tpm.git
         ignore = dirty
 [submodule "tmux/plugins/tmux-prefix-highlight"]
 	path = tmux/plugins/tmux-prefix-highlight
-	url = git@github.com:tmux-plugins/tmux-prefix-highlight.git
+	url = https://github.com/tmux-plugins/tmux-prefix-highlight.git
 [submodule "tmux/plugins/tmux-copycat"]
 	path = tmux/plugins/tmux-copycat
-	url = git@github.com:tmux-plugins/tmux-copycat.git
+	url = https://github.com/tmux-plugins/tmux-copycat.git
 [submodule "bundle/syntastic"]
 	path = bundle/syntastic
-	url = git@github.com:vim-syntastic/syntastic.git
+	url = https://github.com/vim-syntastic/syntastic.git
 [submodule "bundle/vim-tmux"]
 	path = bundle/vim-tmux
-	url = git@github.com:tmux-plugins/vim-tmux.git
+	url = https://github.com/tmux-plugins/vim-tmux.git
 [submodule "bundle/Dockerfile"]
 	path = bundle/Dockerfile
-	url = git@github.com:ekalinin/Dockerfile.vim.git
+	url = https://github.com/ekalinin/Dockerfile.vim.git
 [submodule "bundle/vim-eunuch"]
 	path = bundle/vim-eunuch
-	url = git@github.com:tpope/vim-eunuch.git
+	url = https://github.com/tpope/vim-eunuch.git
 [submodule "bundle/vim-surround"]
 	path = bundle/vim-surround
-	url = git@github.com:tpope/vim-surround.git
+	url = https://github.com/tpope/vim-surround.git
 [submodule "bundle/vim-fugitive"]
 	path = bundle/vim-fugitive
-	url = git@github.com:tpope/vim-fugitive.git
+	url = https://github.com/tpope/vim-fugitive.git
 [submodule "bundle/vim-tbone"]
 	path = bundle/vim-tbone
-	url = git@github.com:tpope/vim-tbone.git
+	url = https://github.com/tpope/vim-tbone.git
 [submodule "bundle/vim-pathogen"]
 	path = bundle/vim-pathogen
-	url = git@github.com:tpope/vim-pathogen.git
+	url = https://github.com/tpope/vim-pathogen.git
+[submodule "bundle/vim-terraform"]
+	path = bundle/vim-terraform
+	url = https://github.com/hashivim/vim-terraform.git
