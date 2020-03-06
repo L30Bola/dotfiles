@@ -16,9 +16,9 @@ fi
 
 # User specific environment and startup programs
 
-if xinput | grep --quiet --color=never "Multi-Touch"; then
-    xinput disable "$(xinput | grep --color=never "Multi-Touch" | cut -c 51-52)"
-fi
+#if xinput | grep --quiet --color=never "Multi-Touch"; then
+#    xinput disable "$(xinput | grep --color=never "Multi-Touch" | cut -c 51-52)"
+#fi
 
 PATH=$PATH:$HOME/.local/bin:$HOME/bin
 
