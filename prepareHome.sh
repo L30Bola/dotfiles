@@ -8,6 +8,11 @@ force=false
 declare -a files_to_be_linked dirs_to_be_linked
 files_to_be_linked=( "bash_profile" "bashrc" "gitconfig" "pythonrc" "tmux.conf" "vimrc" )
 dirs_to_be_linked=( "tmux" )
+if uname | grep -q "Darwin"; then
+    sed_binary=gsed
+else
+    sed_binary=sed
+fi
 
 declare -i temp1 temp2 temp3 
 
@@ -63,11 +68,11 @@ function makeSymLinkAtHomeDir() {
 
 function chooseBetweenHTTPSOrGitForSubmodulesURLProtocol() {
     if [ "${chosenGitSubmoduleURLProtocol,,}" == "https" ]; then
-        sed -i "s|git@github.com:|https://github.com/|g" "${absoluteScriptDir}"/.gitmodules
-        sed -i "s|git@github.com:|https://github.com/|g" "${absoluteScriptDir}"/.git/config
+        "${sed_binary}" -i "s|git@github.com:|https://github.com/|g" "${absoluteScriptDir}"/.gitmodules
+        "${sed_binary}" -i "s|git@github.com:|https://github.com/|g" "${absoluteScriptDir}"/.git/config
     elif [ "${chosenGitSubmoduleURLProtocol,,}" == "git" ]; then
-        sed -i "s|https://github.com/|git@github.com:|g" "${absoluteScriptDir}"/.gitmodules
-        sed -i "s|https://github.com/|git@github.com:|g" "${absoluteScriptDir}"/.git/config
+        "${sed_binary}" -i "s|https://github.com/|git@github.com:|g" "${absoluteScriptDir}"/.gitmodules
+        "${sed_binary}" -i "s|https://github.com/|git@github.com:|g" "${absoluteScriptDir}"/.git/config
     fi
 }
 
