@@ -10,6 +10,7 @@ set expandtab
 set shiftwidth=4
 set smarttab
 set number
+set backspace=indent,eol,start
 
 " F3 enables and disables the line numbering inside ViM
 noremap <F3> :set invnumber<CR>
@@ -44,6 +45,10 @@ function! XTermPasteBegin()
   set paste
   return ""
 endfunction
+
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+endif
 
 inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
 " END: auto paste-mode when pasting in INSERT mode with support for TMUX
