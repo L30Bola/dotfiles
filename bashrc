@@ -37,7 +37,20 @@ LC_ADDRESS="en_US.UTF-8"
 LC_TELEPHONE="en_US.UTF-8"
 LC_MEASUREMENT="pt_BR.UTF-8"
 LC_IDENTIFICATION="en_US.UTF-8"
-export LANG LC_TYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
+export LANG \
+       LC_TYPE \
+       LC_NUMERIC \
+       LC_TIME \
+       LC_COLLATE \
+       LC_MONETARY \
+       LC_MESSAGES \
+       LC_PAPER \
+       LC_NAME \
+       LC_ADDRESS \
+       LC_TELEPHONE \
+       LC_MEASUREMENT \
+       LC_IDENTIFICATION
+
 export PYTHONSTARTUP=~/.pythonrc
 
 # If not running interactively, don't do anything
@@ -48,8 +61,18 @@ export PYTHONSTARTUP=~/.pythonrc
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
 
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-    . $(brew --prefix)/etc/bash_completion
+if command -v brew > /dev/null; then
+  # bash_completion
+  if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+      . "$(brew --prefix)/etc/bash_completion"
+  fi
+  # bash_completion@2
+  [[ -r "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]] && \
+    . "$(brew --prefix)/etc/profile.d/bash_completion.sh"
+fi
+
+if command -v ketall > /dev/null; then
+  source <(ketall completion bash) 
 fi
 
 complete -C /usr/local/bin/terraform terraform
@@ -61,7 +84,7 @@ export LS_COLORS
 YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35"
 export YAOURT_COLORS
 
-PS1="\[$reset\]\[$bold\][\[$blue\]\u\[$white\]@\[$green\]\h \[$red\]\A \[$magenta\]\W\[$white\]]:\$\[$reset\] "
+PS1="\[$reset\]\[$bold\][\[$blue\]\u\[$white\]@\[$green\]\h \[$red\]\t \[$magenta\]\W\[$white\]]:\\$\[$reset\] "
 export PS1
 
 ## END ENVVARS
@@ -87,8 +110,22 @@ else
 fi
 alias docker="btime docker"
 alias wttr="curl wttr.in"
+alias k="kubectl"
+alias kx="kubectx"
+alias g="git"
 
 # FUNCTIONS
+function sidt() {
+  curl -LSs shouldideploy.today/api
+  printf "\n"
+}
+
+if uname | grep -q "Darwin"; then
+  function flush-dns() {
+    sudo dscacheutil -flushcache
+    sudo killall -HUP mDNSResponder
+  }
+fi
 
 function md5CrtlC() {
     echo -n "$1" | md5sum | awk '{ printf $1 }' | xsel -bi
@@ -163,13 +200,6 @@ function extract () {
   fi
 }
 
-function comp32() { 
-    gcc -m32 -E -o "${1%.*}".i "$1"
-    gcc -m32 -S -o "${1%.*}".s "${1%.*}".i
-    gcc -m32 -c -o "${1%.*}".o "${1%.*}".s
-    gcc -m32 -o "${1%.*}" "${1%.*}".o
-}
-
 function docker-cleasing() {
 # shellcheck disable=SC2046
     docker kill $(docker ps -q)
@@ -229,29 +259,6 @@ case ${TERM} in
     ;;
 esac
 
-#case ${TERM} in
-#
-#    screen*)
-#
-#        # user command to change default pane title on demand
-#        function title { TMUX_PANE_TITLE="$*"; }
-#
-#        # function that performs the title update (invoked as PROMPT_COMMAND)
-#        function update_title { printf "\033]2;%s\033\\" "${1:-$TMUX_PANE_TITLE}"; }
-#
-#        # default pane title is the name of the current process (i.e. 'bash')
-#        TMUX_PANE_TITLE=$(ps -o comm $$ | tail -1)
-#
-#        # Reset title to the default before displaying the command prompt
-#        PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'update_title'   
-#
-#        # Update title before executing a command: set it to the command
-#        trap 'update_title "$BASH_COMMAND"' DEBUG
-#
-#        ;;
-#
-#esac
-
 ## BASH configs
 
 # Number of lines or commands to be added to history file
@@ -293,9 +300,9 @@ shopt -s histverify
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 if uname | grep -q "Darwin"; then
-    export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin"
+  export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin"
 else
-    export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
+  export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
 fi
 
 ### Bashhub.com Installation.
@@ -304,3 +311,6 @@ if [ -f ~/.bashhub/bashhub.sh ]; then
     source ~/.bashhub/bashhub.sh
 fi
 
+if uname | grep -q "Darwin"; then
+  export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+fi
