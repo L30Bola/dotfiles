@@ -1,8 +1,29 @@
 [user]
         name="Leonardo Godoy"
-        email="leonardoggavellar@gmail.com"
+        email="leonardo.godoy@gmail.com"
         username="L30Bola"
 [core]
         editor=vim
 [web]
         browser=google-chrome
+[url "git@git.topfreegames.com:"]
+	insteadOf = https://git.topfreegames.com/
+[alias]
+  n = "!n() { \
+    local last_branch; \
+    last_branch=$(git symbolic-ref --short HEAD); \
+    git stash apply stash; \
+    git checkout master; \
+    git fetch; \
+    git merge origin/master; \
+    git checkout ${last_branch}; \
+    git merge origin/master; \
+  }; n" 
+  
+  a = "add"
+  c = "commit"
+  co = "checkout"
+  l = "log"
+  m = "merge"
+  p = "push"
+  s = "status"
