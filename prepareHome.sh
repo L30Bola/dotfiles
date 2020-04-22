@@ -2,17 +2,12 @@
 
 set -e 
 
-declare force absoluteScriptDir chosenGitSubmoduleURLProtocol
+declare force absoluteScriptDir
 force=false
 
 declare -a files_to_be_linked dirs_to_be_linked
 files_to_be_linked=( "bash_profile" "bashrc" "gitconfig" "pythonrc" "tmux.conf" "vimrc" )
 dirs_to_be_linked=( "tmux" )
-if uname | grep -q "Darwin"; then
-    sed_binary=gsed
-else
-    sed_binary=sed
-fi
 
 declare -i temp1 temp2 temp3 
 
@@ -66,16 +61,6 @@ function makeSymLinkAtHomeDir() {
     fi
 }
 
-function chooseBetweenHTTPSOrGitForSubmodulesURLProtocol() {
-    if [ "${chosenGitSubmoduleURLProtocol,,}" == "https" ]; then
-        "${sed_binary}" -i "s|git@github.com:|https://github.com/|g" "${absoluteScriptDir}"/.gitmodules
-        "${sed_binary}" -i "s|git@github.com:|https://github.com/|g" "${absoluteScriptDir}"/.git/config
-    elif [ "${chosenGitSubmoduleURLProtocol,,}" == "git" ]; then
-        "${sed_binary}" -i "s|https://github.com/|git@github.com:|g" "${absoluteScriptDir}"/.gitmodules
-        "${sed_binary}" -i "s|https://github.com/|git@github.com:|g" "${absoluteScriptDir}"/.git/config
-    fi
-}
-
 function cloneGitSubmodules() {
     pushd "${absoluteScriptDir}"
     git submodule update --recursive --init
@@ -84,18 +69,7 @@ function cloneGitSubmodules() {
 
 function control_c() {
     trap - SIGINT
-    printf "\\nWhich protocol do you prefer to use to clone Submodules, "
-    printf "HTTPS or Git?\\n"
-    printf "Press Ctrl + C to exit.\\n"
-    while IFS= read -rp "> " chosenGitSubmoduleURLProtocol; do
-        if [ "${chosenGitSubmoduleURLProtocol,,}" != "https" ] && [ "${chosenGitSubmoduleURLProtocol,,}" != "git" ]; then
-            printf "%s is not a valid option. Choose between HTTPS or Git.\\n" "${chosenGitSubmoduleURLProtocol}"
-        else
-            chooseBetweenHTTPSOrGitForSubmodulesURLProtocol
-            cloneGitSubmodules
-            exit 0
-        fi
-    done
+    cloneGitSubmodules
 }
 
 if [ "$#" -eq 0 ]; then
@@ -164,13 +138,6 @@ else
         exit 15
     fi
 
-    if [ "${2,,}" != "https" ] || [ "${2,,}" != "git" ]; then
-        chosenGitSubmoduleURLProtocol="$2"
-    else
-        printf "%s is not a valid option. Choose between HTTPS or Git.\\n" "${chosenGitSubmoduleURLProtocol}"
-        exit 16
-    fi
-    
     if [ "${3,,}" == "force" ]; then
         force=true
     fi
@@ -181,6 +148,5 @@ else
     for ((temp2=0; temp2 < temp3 - "${#files_to_be_linked[@]}"; temp2++)); do
         makeSymLinkAtHomeDir "${dirs_to_be_linked[${temp2}]}"
     done
-    chooseBetweenHTTPSOrGitForSubmodulesURLProtocol
     cloneGitSubmodules
 fi
