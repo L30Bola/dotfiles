@@ -4,10 +4,10 @@ execute pathogen#helptags()
 
 set encoding=utf-8
 set fileencoding=utf-8
-set tabstop=4
+set tabstop=2
 set softtabstop=0
 set expandtab
-set shiftwidth=4
+set shiftwidth=2
 set smarttab
 set number
 set backspace=indent,eol,start
