@@ -34,33 +34,3 @@
 [submodule "tmux/plugins/tmux-copycat"]
 	path = tmux/plugins/tmux-copycat
 	url = https://github.com/tmux-plugins/tmux-copycat.git
-[submodule "bundle/syntastic"]
-	path = bundle/syntastic
-	url = https://github.com/vim-syntastic/syntastic.git
-[submodule "bundle/vim-tmux"]
-	path = bundle/vim-tmux
-	url = https://github.com/tmux-plugins/vim-tmux.git
-[submodule "bundle/Dockerfile"]
-	path = bundle/Dockerfile
-	url = https://github.com/ekalinin/Dockerfile.vim.git
-[submodule "bundle/vim-eunuch"]
-	path = bundle/vim-eunuch
-	url = https://github.com/tpope/vim-eunuch.git
-[submodule "bundle/vim-surround"]
-	path = bundle/vim-surround
-	url = https://github.com/tpope/vim-surround.git
-[submodule "bundle/vim-fugitive"]
-	path = bundle/vim-fugitive
-	url = https://github.com/tpope/vim-fugitive.git
-[submodule "bundle/vim-tbone"]
-	path = bundle/vim-tbone
-	url = https://github.com/tpope/vim-tbone.git
-[submodule "bundle/vim-pathogen"]
-	path = bundle/vim-pathogen
-	url = https://github.com/tpope/vim-pathogen.git
-[submodule "bundle/vim-terraform"]
-	path = bundle/vim-terraform
-	url = https://github.com/hashivim/vim-terraform.git
-[submodule "bundle/coc.nvim"]
-	path = bundle/coc.nvim
-	url = https://github.com/neoclide/coc.nvim.git
