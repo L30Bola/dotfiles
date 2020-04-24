@@ -1,7 +1,8 @@
 {
 "diagnostic-languageserver.filetypes": {
   // lint `sh` (includes `bash`) files
-  "sh": "shellcheck"
+  "sh": "shellcheck",
+  "markdown": "markdownlint"
 },
 "diagnostic-languageserver.formatFiletypes": {
   // format `sh` (includes `bash`) files using formatter defined below
