@@ -14,8 +14,3 @@ fi
 #    ssh-add
 #fi
 
-PATH=$PATH:$HOME/.local/bin:$HOME/bin
-
-export PATH
-
-export PATH=$PATH:~/.kube/plugins/jordanwilson230
