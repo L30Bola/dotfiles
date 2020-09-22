@@ -2,7 +2,8 @@
 "diagnostic-languageserver.filetypes": {
   // lint `sh` (includes `bash`) files
   "sh": "shellcheck",
-  "markdown": "markdownlint"
+  "markdown": "markdownlint",
+  "terraform": "terraform"
 },
 "diagnostic-languageserver.formatFiletypes": {
   // format `sh` (includes `bash`) files using formatter defined below
@@ -23,7 +24,7 @@
   "languageserver": {
     "terraform": {
       "command": "terraform-lsp",
-      "filetypes": ["terraform"],
+      "filetypes": ["terraform", "tf"],
       "initializationOptions": {}
     }
   },
@@ -33,5 +34,7 @@
 "python.linting.flake8Enabled": false,
 "python.linting.pylintEnabled": true,
 "suggest.timeout": 5000,
-"git.enableGutters": true
+"git.enableGutters": true,
+"yaml.format.enable": true,
+"yaml.completion": true
 }
