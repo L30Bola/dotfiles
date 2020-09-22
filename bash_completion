@@ -481,4 +481,6 @@ _complete_alias() {
 #complete -F _complete_alias myalias3
 complete -F _complete_alias k
 complete -F _complete_alias kx
+complete -F _complete_alias kns
 complete -F _complete_alias g
+complete -F _complete_alias tf
