@@ -1,11 +1,11 @@
 [user]
-        name="Leonardo Godoy"
-        email="leonardoggavellar@gmail.com"
-        username="L30Bola"
+  name="Leonardo Godoy"
+  email="leonardoggavellar@gmail.com"
+  username="L30Bola"
 [core]
-        editor=vim
+  editor=vim
 [web]
-        browser=google-chrome
+  browser=google-chrome
 [url "git@git.topfreegames.com:"]
   insteadOf = https://git.topfreegames.com/
   insteadOf = https://git.topfreegames.com:443/
@@ -13,6 +13,27 @@
   insteadOf = http://git.topfreegames.com:80/
   insteadOf = git::http://git.topfreegames.com/
   insteadOf = http://git@git.topfreegames.com/
+
+[includeIf "gitdir:~/projetos/topfreegames/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/ads/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/sre/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/design/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/websites/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/scalemonk/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/liveopstools/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/eventscatalog/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/infrastructure/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/ghorg/"]
+  path = ~/.vim/gitconfigs/wls
 
 [alias]
   n = "!n() { \
