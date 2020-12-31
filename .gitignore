@@ -5,3 +5,7 @@ dotFiles.key
 *.swp
 autoload
 plugged
+work/
+!work/*.gpg
+gitconfigs/
+!gitconfigs/*.gpg
