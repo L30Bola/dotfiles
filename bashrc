@@ -25,18 +25,18 @@ if command -v gnome-keyring-daemon > /dev/null; then
 fi
 
 LANG="en_US.UTF-8"
-LC_CTYPE="en_US.UTF-8"
-LC_NUMERIC="pt_BR.UTF-8"
-LC_TIME="pt_BR.UTF-8"
+LC_ADDRESS="en_US.UTF-8"
 LC_COLLATE="en_US.UTF-8"
+LC_CTYPE="en_US.UTF-8"
+LC_IDENTIFICATION="en_US.UTF-8"
 LC_MONETARY="pt_BR.UTF-8"
 LC_MESSAGES="en_US.UTF-8"
-LC_PAPER="pt_BR.UTF-8"
-LC_NAME="en_US.UTF-8"
-LC_ADDRESS="en_US.UTF-8"
-LC_TELEPHONE="en_US.UTF-8"
 LC_MEASUREMENT="pt_BR.UTF-8"
-LC_IDENTIFICATION="en_US.UTF-8"
+LC_NAME="en_US.UTF-8"
+LC_NUMERIC="pt_BR.UTF-8"
+LC_PAPER="pt_BR.UTF-8"
+LC_TELEPHONE="en_US.UTF-8"
+LC_TIME="pt_BR.UTF-8"
 export LANG \
        LC_TYPE \
        LC_NUMERIC \
@@ -52,6 +52,9 @@ export LANG \
        LC_IDENTIFICATION
 
 export PYTHONSTARTUP=~/.pythonrc
+
+EDITOR=vim
+export EDITOR
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -75,8 +78,17 @@ if command -v ketall > /dev/null; then
   source <(ketall completion bash) 
 fi
 
-complete -C /usr/local/bin/terraform terraform
-complete -C /usr/local/bin/mc mc
+#if command -v terraform > /dev/null; then
+#  complete -C "$(command -v terraform)" terraform
+#fi
+
+if command -v mc > /dev/null; then
+  complete -C "$(command -v mc)" mc
+fi
+
+if command -v vault > /dev/null; then
+  complete -C "$(command -v vault)" vault
+fi
 
 LS_COLORS="di=1;34;40:ln=1;35;40:so=1;32;40:pi=1;33;40:ex=1;31;40:bd=1;34;46:cd=1;0;44:su=1;0;41:sg=1;0;46:tw=1;0;42:ow=1;0;43:"
 export LS_COLORS
@@ -112,11 +124,23 @@ alias docker="btime docker"
 alias wttr="curl wttr.in"
 alias k="kubectl"
 alias kx="kubectx"
+alias kns="kubens"
 alias g="git"
+alias tf="terraform"
 
 # FUNCTIONS
+source "${HOME}/.vim/work/wls.sh"
+
+function home() {
+  export CDPATH="$HOME"
+}
+
+function unhome() {
+  unset CDPATH
+}
+
 function sidt() {
-  curl -LSs shouldideploy.today/api
+  curl -LSs 'https://shouldideploy.today/api?tz=America%2FSao_Paulo'
   printf "\n"
 }
 
@@ -301,14 +325,26 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 if uname | grep -q "Darwin"; then
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin"
-else
-  export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
+#else
+#  export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
+fi
+
+PATH="${PATH}:${HOME}/.local/bin:${HOME}/bin:${HOME}/go/bin:${HOME}/.kube/plugins/jordanwilson230"
+PATH="${PATH}:${HOME}/.krew/bin"
+export PATH
+
+if [ -f /opt/asdf-vm/asdf.sh ]; then
+  source /opt/asdf-vm/asdf.sh
 fi
 
 ### Bashhub.com Installation.
 ### This Should be at the EOF. https://bashhub.com/docs
 if [ -f ~/.bashhub/bashhub.sh ]; then
     source ~/.bashhub/bashhub.sh
+fi
+
+if [ -f ~/projetos/local/z/z.sh ]; then
+    source ~/projetos/local/z/z.sh
 fi
 
 if uname | grep -q "Darwin"; then
