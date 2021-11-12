@@ -13,4 +13,4 @@ fi
 #    eval "$(ssh-agent -s)"
 #    ssh-add
 #fi
-
+export PATH=$PATH:~/.kube/plugins/jordanwilson230
