@@ -1,7 +1,11 @@
-# shellcheck disable=SC1117 
+# shellcheck disable=SC1117
 # shellcheck disable=SC2034
 
 ## ENVVARS
+
+PATH="${PATH}:${HOME}/.local/bin:${HOME}/bin:${HOME}/go/bin:${HOME}/.kube/plugins/jordanwilson230"
+PATH="${PATH}:${HOME}/.krew/bin"
+export PATH
 
 if [[ $- == *i* ]]; then
     reset=$(tput sgr0)
@@ -24,6 +28,7 @@ if command -v gnome-keyring-daemon > /dev/null; then
     export "$(gnome-keyring-daemon --daemonize --start)"
 fi
 
+BAT_THEME="Coldark-Dark"
 LANG="en_US.UTF-8"
 LC_ADDRESS="en_US.UTF-8"
 LC_COLLATE="en_US.UTF-8"
@@ -37,7 +42,8 @@ LC_NUMERIC="pt_BR.UTF-8"
 LC_PAPER="pt_BR.UTF-8"
 LC_TELEPHONE="en_US.UTF-8"
 LC_TIME="pt_BR.UTF-8"
-export LANG \
+export BAT_THEME \
+       LANG \
        LC_TYPE \
        LC_NUMERIC \
        LC_TIME \
@@ -56,8 +62,36 @@ export PYTHONSTARTUP=~/.pythonrc
 EDITOR=vim
 export EDITOR
 
+if uname | grep -q "Darwin"; then
+  export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+fi
+
+LS_COLORS="di=1;34;40:ln=1;35;40:so=1;32;40:pi=1;33;40:ex=1;31;40:bd=1;34;46:cd=1;0;44:su=1;0;41:sg=1;0;46:tw=1;0;42:ow=1;0;43:"
+export LS_COLORS
+
+YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35"
+export YAOURT_COLORS
+
+PS1="\[$reset\]\[$bold\][\[$blue\]\u\[$white\]@\[$green\]\h \[$red\]\t \[$magenta\]\W\[$white\]]:\\$\[$reset\] "
+export PS1
+
+HSTR_CONFIG=hicolor,case-sensitive,keywords-matching,raw-history-view,prompt-bottom
+export HSTR_CONFIG
+
+## END ENVVARS
+
+## COMPLETIONS
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
+
+if [ -f /opt/asdf-vm/asdf.sh ]; then
+  source /opt/asdf-vm/asdf.sh
+fi
+
+if [ -f ~/projetos/local/z/z.sh ]; then
+    source ~/projetos/local/z/z.sh
+fi
 
 # Use bash-completion, if available
 # shellcheck disable=SC1091
@@ -75,7 +109,19 @@ if command -v brew > /dev/null; then
 fi
 
 if command -v ketall > /dev/null; then
-  source <(ketall completion bash) 
+  source <(ketall completion bash)
+fi
+
+if command -v helm > /dev/null; then
+  source <(helm completion bash)
+fi
+
+if command -v bigbang1 > /dev/null; then
+  source <(bigbang1 completion bash | sed 's|bigbang|bigbang1|g')
+fi
+
+if command -v bigbang0 > /dev/null; then
+  source <(bigbang0 completion bash | sed 's|bigbang|bigbang0|g')
 fi
 
 #if command -v terraform > /dev/null; then
@@ -90,16 +136,15 @@ if command -v vault > /dev/null; then
   complete -C "$(command -v vault)" vault
 fi
 
-LS_COLORS="di=1;34;40:ln=1;35;40:so=1;32;40:pi=1;33;40:ex=1;31;40:bd=1;34;46:cd=1;0;44:su=1;0;41:sg=1;0;46:tw=1;0;42:ow=1;0;43:"
-export LS_COLORS
+if command -v aws_completer > /dev/null; then
+  complete -C "$(command -v aws_completer)" aws
+fi
 
-YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35"
-export YAOURT_COLORS
+if command -v fluxctl > /dev/null; then
+  source <(fluxctl completion bash)
+fi
 
-PS1="\[$reset\]\[$bold\][\[$blue\]\u\[$white\]@\[$green\]\h \[$red\]\t \[$magenta\]\W\[$white\]]:\\$\[$reset\] "
-export PS1
-
-## END ENVVARS
+## END COMPLETIONS
 
 # ALIASES
 alias ls='ls --color=auto'
@@ -115,6 +160,7 @@ alias meuip="curl https://ipinfo.io/ip"
 alias bashrc="vim ~/.bashrc && source ~/.bashrc"
 alias bashHist="vim ~/.bash_history"
 alias vimrc="vim ~/.vimrc"
+alias gitconfig="vim ~/.gitconfig"
 if uname | grep -q "Darwin"; then
     alias btime="/usr/local/opt/gnu-time/libexec/gnubin/time --format='\n%C took %e seconds.'"
 else
@@ -127,6 +173,12 @@ alias kx="kubectx"
 alias kns="kubens"
 alias g="git"
 alias tf="terraform"
+alias bb1="bigbang1"
+alias bb0="bigbang0"
+alias f="fluxctl"
+alias ka="kube-auth --auth-only"
+alias hh="hstr"
+alias d="docker"
 
 # FUNCTIONS
 source "${HOME}/.vim/work/wls.sh"
@@ -151,6 +203,17 @@ if uname | grep -q "Darwin"; then
   }
 fi
 
+#if command -v rpg-cli > /dev/null; then
+#  function cd () {
+#    if [[ "$#" -eq 0 ]]; then
+#      rpg-cli "${HOME}"
+#    else
+#      rpg-cli "$1"
+#    fi
+#    builtin cd "$(rpg-cli --pwd)"
+#  }
+#fi
+
 function md5CrtlC() {
     echo -n "$1" | md5sum | awk '{ printf $1 }' | xsel -bi
 }
@@ -169,7 +232,7 @@ function transfer() {
 
     # get temporarily filename, output is written to this file show progress can be showed
     tmpfile=$(mktemp -t transferXXX)
-    
+
     # upload stdin or file
     file=$1
 
@@ -180,7 +243,7 @@ function transfer() {
             echo "File $file doesn't exists."
             return 1
         fi
-        
+
         if [ -d "$file" ]; then
             # zip directory and transfer
             zipfile=$(mktemp -t transferXXX.zip)
@@ -195,7 +258,7 @@ function transfer() {
         # transfer pipe
         curl --progress-bar --upload-file "-" "https://transfer.sh/$file" >> "$tmpfile"
     fi
-   
+
     # cat output link
     cat "$tmpfile"
 
@@ -237,7 +300,7 @@ function docker-cleasing() {
 }
 
 function countdown() {
-    datesecstoend=$(( $(date +%s) + $1 )) 
+    datesecstoend=$(( $(date +%s) + "$@" )) 
     while [ "$datesecstoend" -ge "$(date +%s)" ]; do 
         echo -ne "$(date -u --date @$(( datesecstoend - $(date +%s) )) +%H:%M:%S)\r"
         sleep 0.1
@@ -271,19 +334,69 @@ function cheat-sheet() {
     curl "https://cheat.sh/$@"
 }
 
+function hsbattery() {
+  local headset_status headset_emoji
+  headset_status=$(headsetcontrol -b)
+  headset_emoji="🎧"
+  if [[ "${headset_status}" =~ .*"Charging".* ]]; then
+    printf "%s  ⚡" "${headset_emoji}"
+  elif [[ "${headset_status}" =~ .*"%".* ]]; then
+    printf "%s  %s" "${headset_emoji}" "$(ag % <<< "${headset_status}" | awk '{ print $2 }')"
+  elif [[ "${headset_status}" =~ .*"Failed to request battery.".* ]]; then
+    printf "%s  🚫" "${headset_emoji}"
+  fi
+}
+
+## https://unix.stackexchange.com/a/83927/100610
+function __wget() {
+    : ${DEBUG:=0}
+    local URL=$1
+    local tag="Connection: close"
+    local mark=0
+
+    if [ -z "${URL}" ]; then
+        printf "Usage: %s \"URL\" [e.g.: %s http://www.google.com/]" \
+               "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 1;
+    fi
+    read proto server path <<<$(echo ${URL//// })
+    DOC=/${path// //}
+    HOST=${server//:*}
+    PORT=${server//*:}
+    [[ x"${HOST}" == x"${PORT}" ]] && PORT=80
+    [[ $DEBUG -eq 1 ]] && echo "HOST=$HOST"
+    [[ $DEBUG -eq 1 ]] && echo "PORT=$PORT"
+    [[ $DEBUG -eq 1 ]] && echo "DOC =$DOC"
+
+    exec 3<>/dev/tcp/${HOST}/$PORT
+    echo -en "GET ${DOC} HTTP/1.1\r\nHost: ${HOST}\r\n${tag}\r\n\r\n" >&3
+    while read line; do
+        [[ $mark -eq 1 ]] && echo $line
+        if [[ "${line}" =~ "${tag}" ]]; then
+            mark=1
+        fi
+    done <&3
+    exec 3>&-
+}
+
+
 # END FUNCTIONS
 
-case ${TERM} in
-  xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
-    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
-
-    ;;
-  screen)
-    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033_%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
-    ;;
-esac
+#case ${TERM} in
+#  xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+#    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
+#
+#    ;;
+#  screen)
+#    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033_%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
+#    ;;
+#esac
 
 ## BASH configs
+
+if [[ -n "${TMUX}" ]]; then
+  export TERM="xterm-256color"
+fi
 
 # Number of lines or commands to be added to history file
 if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || { [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]]; }; then
@@ -305,7 +418,8 @@ export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 
 # avoid duplicates..
 # Comandos iguais não são adicionados e adicionados ao histórico
-export HISTCONTROL=ignoreboth:erasedups
+HISTCONTROL="ignoreboth:erasedups"
+export HISTCONTROL
 
 # append history entries..
 # Sempre concatena os comandos inseridos no bash_history
@@ -321,7 +435,8 @@ shopt -s histverify
 # After each command, save and reload history
 # Após cada comando, o bash_history é salvo e "relido"
 # Alguns programas não conseguem resolver essa variável
-export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+PROMPT_COMMAND="history -a; history -r; $PROMPT_COMMAND"
+export PROMPT_COMMAND
 
 if uname | grep -q "Darwin"; then
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin"
@@ -329,24 +444,8 @@ if uname | grep -q "Darwin"; then
 #  export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
 fi
 
-PATH="${PATH}:${HOME}/.local/bin:${HOME}/bin:${HOME}/go/bin:${HOME}/.kube/plugins/jordanwilson230"
-PATH="${PATH}:${HOME}/.krew/bin"
-export PATH
-
-if [ -f /opt/asdf-vm/asdf.sh ]; then
-  source /opt/asdf-vm/asdf.sh
-fi
-
 ### Bashhub.com Installation.
 ### This Should be at the EOF. https://bashhub.com/docs
 if [ -f ~/.bashhub/bashhub.sh ]; then
     source ~/.bashhub/bashhub.sh
-fi
-
-if [ -f ~/projetos/local/z/z.sh ]; then
-    source ~/projetos/local/z/z.sh
-fi
-
-if uname | grep -q "Darwin"; then
-  export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 fi
