@@ -2,6 +2,7 @@
   name="Leonardo Godoy"
   email="leonardoggavellar@gmail.com"
   username="L30Bola"
+  signingkey = CFF266C3E04E6AD6
 [core]
   editor=vim
 [web]
@@ -32,27 +33,46 @@
   path = ~/.vim/gitconfigs/wls
 [includeIf "gitdir:~/projetos/infrastructure/"]
   path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/aws-accounts/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/ops/"]
+  path = ~/.vim/gitconfigs/wls
 [includeIf "gitdir:~/ghorg/"]
   path = ~/.vim/gitconfigs/wls
 
 [alias]
+  mm = "!mm() { \
+    set +x; \
+    local main_branch; \
+    main_branch=$(git symbolic-ref --short refs/remotes/origin/HEAD); \
+    git merge --ff ${main_branch}; \
+    set -x; \
+  }; mm"
+
   n = "!n() { \
+    set +x; \
     local last_branch; \
     last_branch=$(git symbolic-ref --short HEAD); \
-    git checkout master; \
+    local main_branch; \
+    main_branch=$(git symbolic-ref --short refs/remotes/origin/HEAD); \
+    git checkout master || git checkout main; \
     git fetch; \
     git rebase; \
     git checkout ${last_branch}; \
-    git rebase master; \
-  }; n" 
-  
+    git rebase master || git rebase main; \
+    set -x; \
+  }; n"
+
   a = "add"
   c = "commit"
   cl = "clone"
+  cp = "cherry-pick"
   co = "checkout"
   com = "checkout master"
   d = "diff"
   f = "fetch"
+  i = "update-index --skip-worktree"
+  ix = "update-index --no-skip-worktree"
   l = "log"
   m = "merge"
   p = "push"
@@ -62,4 +82,4 @@
   st = "stash"
   t = "tag"
 [pull]
-	rebase = true
+  rebase = true
