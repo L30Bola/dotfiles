@@ -9,3 +9,4 @@ work/*
 !work/*.gpg
 gitconfigs/*
 !gitconfigs/*.gpg
+undodir/
