@@ -78,6 +78,9 @@ export PS1
 HSTR_CONFIG=hicolor,case-sensitive,keywords-matching,raw-history-view,prompt-bottom
 export HSTR_CONFIG
 
+NVM_DIR="$HOME/.nvm"
+export NVM_DIR
+
 ## END ENVVARS
 
 ## COMPLETIONS
@@ -143,6 +146,9 @@ fi
 if command -v fluxctl > /dev/null; then
   source <(fluxctl completion bash)
 fi
+
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 ## END COMPLETIONS
 
@@ -379,6 +385,10 @@ function __wget() {
     exec 3>&-
 }
 
+function histCount() {
+  local count="$1"
+  HISTTIMEFORMAT="" history | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n "${count:-10}"
+}
 
 # END FUNCTIONS
 
@@ -418,7 +428,7 @@ export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 
 # avoid duplicates..
 # Comandos iguais não são adicionados e adicionados ao histórico
-HISTCONTROL="ignoreboth:erasedups"
+HISTCONTROL="ignorespace:ignoredups:erasedups"
 export HISTCONTROL
 
 # append history entries..
@@ -449,3 +459,4 @@ fi
 if [ -f ~/.bashhub/bashhub.sh ]; then
     source ~/.bashhub/bashhub.sh
 fi
+
