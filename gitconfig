@@ -41,6 +41,12 @@
   path = ~/.vim/gitconfigs/wls
 
 [alias]
+  com = "!com() { \
+    local main_branch; \
+    main_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p'); \
+    git checkout ${main_branch}; \
+  }; com"
+
   mm = "!mm() { \
     set +x; \
     local main_branch; \
@@ -68,7 +74,6 @@
   cl = "clone"
   cp = "cherry-pick"
   co = "checkout"
-  com = "checkout master"
   d = "diff"
   f = "fetch"
   i = "update-index --skip-worktree"
