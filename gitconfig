@@ -70,6 +70,7 @@
   }; n"
 
   a = "add"
+  b = "branch"
   c = "commit"
   cl = "clone"
   cp = "cherry-pick"
