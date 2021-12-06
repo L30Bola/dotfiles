@@ -185,6 +185,7 @@ alias f="fluxctl"
 alias ka="kube-auth --auth-only"
 alias hh="hstr"
 alias d="docker"
+alias inputrc="vim ~/.inputrc && exec bash"
 
 # FUNCTIONS
 source "${HOME}/.vim/work/wls.sh"
