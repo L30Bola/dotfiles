@@ -62,7 +62,7 @@ export PYTHONSTARTUP=~/.pythonrc
 EDITOR=vim
 export EDITOR
 
-if uname | grep -q "Darwin"; then
+if uname | grep --silent "Darwin"; then
   export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 fi
 
@@ -80,6 +80,9 @@ export HSTR_CONFIG
 
 NVM_DIR="$HOME/.nvm"
 export NVM_DIR
+
+BH_URL=http://stream.l30bola.games:3000
+export BH_URL
 
 ## END ENVVARS
 
@@ -119,12 +122,8 @@ if command -v helm > /dev/null; then
   source <(helm completion bash)
 fi
 
-if command -v bigbang1 > /dev/null; then
-  source <(bigbang1 completion bash | sed 's|bigbang|bigbang1|g')
-fi
-
-if command -v bigbang0 > /dev/null; then
-  source <(bigbang0 completion bash | sed 's|bigbang|bigbang0|g')
+if command -v bigbang > /dev/null; then
+  source <(bigbang completion bash)
 fi
 
 #if command -v terraform > /dev/null; then
@@ -147,6 +146,22 @@ if command -v fluxctl > /dev/null; then
   source <(fluxctl completion bash)
 fi
 
+if command -v cmctl > /dev/null; then
+  source <(cmctl completion bash)
+fi
+
+if command -v vcluster > /dev/null; then
+  source <(vcluster completion bash)
+fi
+
+if command -v kops > /dev/null; then
+  source <(kops completion bash)
+fi
+
+if command -v kind > /dev/null; then
+  source <(kind completion bash)
+fi
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
@@ -154,7 +169,7 @@ fi
 
 # ALIASES
 alias ls='ls --color=auto'
-alias grep='grep --color=always'
+#alias grep='grep --color=always'
 alias dockerm="docker rm \$(docker ps -a -q)"
 alias dockermi="docker rmi \$(docker images -q)"
 # http://blog.pixelastic.com/2015/09/29/better-listing-of-docker-images-and-container/
@@ -179,13 +194,12 @@ alias kx="kubectx"
 alias kns="kubens"
 alias g="git"
 alias tf="terraform"
-alias bb1="bigbang1"
-alias bb0="bigbang0"
-alias f="fluxctl"
+alias bb="bigbang"
 alias ka="kube-auth --auth-only"
 alias hh="hstr"
 alias d="docker"
 alias inputrc="vim ~/.inputrc && exec bash"
+alias sshconfig="vim ~/.ssh/config"
 
 # FUNCTIONS
 source "${HOME}/.vim/work/wls.sh"
@@ -203,7 +217,7 @@ function sidt() {
   printf "\n"
 }
 
-if uname | grep -q "Darwin"; then
+if uname | grep --silent "Darwin"; then
   function flush-dns() {
     sudo dscacheutil -flushcache
     sudo killall -HUP mDNSResponder
@@ -449,10 +463,19 @@ shopt -s histverify
 PROMPT_COMMAND="history -a; history -r; $PROMPT_COMMAND"
 export PROMPT_COMMAND
 
-if uname | grep -q "Darwin"; then
-  export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin"
+if uname | grep --silent "Darwin"; then
+  export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin:/var/lib/snapd/snap/bin"
 #else
 #  export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
+fi
+
+## END BASH configs
+
+## Binds
+
+if [[ $- =~ .*i.* ]]; then
+  bind '"\C-r": "\C-a hstr -- \C-j"'
+  bind '"\C-h": "\C-a bashHist \C-j"'
 fi
 
 ### Bashhub.com Installation.

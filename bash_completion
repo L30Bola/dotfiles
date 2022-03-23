@@ -1065,7 +1065,6 @@ complete -F _complete_alias kx
 complete -F _complete_alias kns
 complete -F _complete_alias g
 complete -F _complete_alias tf
-complete -F _complete_alias bb1
-complete -F _complete_alias bb0
+complete -F _complete_alias bb
 complete -F _complete_alias f
 complete -F _complete_alias d
