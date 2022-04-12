@@ -1,6 +1,8 @@
 # shellcheck disable=SC1117
 # shellcheck disable=SC2034
 
+#LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 begin="${EPOCHREALTIME}"
+
 ## ENVVARS
 
 PATH="${PATH}:${HOME}/.local/bin:${HOME}/bin:${HOME}/go/bin:${HOME}/.kube/plugins/jordanwilson230"
@@ -340,13 +342,6 @@ function stopwatch() {
     done
 }
 
-function __notification_prompt_command() { 
-    local lastcommand
-    lastcommand=$(HISTTIMEFORMAT='' history 1 | sed 's/^ *[0-9]\+ *//')
-    lastcommand="${lastcommand//;/ }"
-    printf "\033]777;notify;Command completed;%s\007" "${lastcommand}"
-}
-
 function generateUnicastMacAddress() {
     od -An -N6 -tx1 /dev/urandom | sed -e 's/^  *//' -e 's/  */:/g' -e 's/:$//' -e 's/^\(.\)[13579bdf]/\10/'
 }
@@ -372,7 +367,7 @@ function hsbattery() {
   fi
 }
 
-## https://unix.stackexchange.com/a/83927/100610
+# https://unix.stackexchange.com/a/83927/100610
 function __wget() {
     : ${DEBUG:=0}
     local URL=$1
@@ -411,16 +406,6 @@ function histCount() {
 
 # END FUNCTIONS
 
-#case ${TERM} in
-#  xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
-#    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
-#
-#    ;;
-#  screen)
-#    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033_%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
-#    ;;
-#esac
-
 ## BASH configs
 
 if [[ -n "${TMUX}" ]]; then
@@ -447,7 +432,7 @@ export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 
 # avoid duplicates..
 # Comandos iguais não são adicionados e adicionados ao histórico
-HISTCONTROL="ignorespace:ignoredups:erasedups"
+HISTCONTROL="ignoreboth"
 export HISTCONTROL
 
 # append history entries..
@@ -482,9 +467,13 @@ if [[ $- =~ .*i.* ]]; then
   bind '"\C-h": "\C-a bashHist \C-j"'
 fi
 
-### Bashhub.com Installation.
-### This Should be at the EOF. https://bashhub.com/docs
+# Bashhub.com Installation.
+# This Should be at the EOF. https://bashhub.com/docs
 if [ -f ~/.bashhub/bashhub.sh ]; then
     source ~/.bashhub/bashhub.sh
 fi
 
+
+#LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
+
+#echo "duration: $(calc -p $end - $begin) seconds."
