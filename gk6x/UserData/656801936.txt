@@ -1,0 +1,21 @@
+﻿##################################################################
+# Mapping keys
+##################################################################
+
+[Base]
+ScrollLock:Insert
+
+[Layer1]
+ScrollLock:Insert
+
+[FnLayer1]
+Enter:LCtrl+Enter
+NumPadEnter:LCtrl+Enter
+L:LWin+L
+
+##################################################################
+# Lighting
+##################################################################
+
+[Lighting(sections-new,Base)]
+[Lighting(sections-new,Layer1)]
