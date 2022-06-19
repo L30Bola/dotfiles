@@ -27,7 +27,9 @@ if [[ $- == *i* ]]; then
 fi
 
 if command -v gnome-keyring-daemon > /dev/null; then
-    export "$(gnome-keyring-daemon --daemonize --start)"
+    if ! ps aux | grep --silent '[g]nome-keyring-daemon'; then
+      export "$(gnome-keyring-daemon --daemonize --start)"
+    fi
 fi
 
 BAT_THEME="Coldark-Dark"
