@@ -18,33 +18,11 @@
   insteadOf = git::http://git.topfreegames.com/
   insteadOf = http://git@git.topfreegames.com/
 
-[includeIf "gitdir:~/projetos/topfreegames/"]
+[includeIf "gitdir:~/projetos/"]
   path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/ads/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/sre/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/design/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/websites/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/scalemonk/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/liveopstools/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/eventscatalog/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/epiccardgame/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/infrastructure/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/aws-accounts/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/ops/"]
+[includeIf "gitdir:/srv/godoy/projetos/"]
   path = ~/.vim/gitconfigs/wls
 [includeIf "gitdir:~/ghorg/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/local/"]
   path = ~/.vim/gitconfigs/wls
 
 [alias]
@@ -68,11 +46,11 @@
     last_branch=$(git symbolic-ref --short HEAD); \
     local main_branch; \
     main_branch=$(git symbolic-ref --short refs/remotes/origin/HEAD); \
-    git checkout master || git checkout main; \
+    git checkout ${main_branch}; \
     git fetch; \
     git rebase; \
     git checkout ${last_branch}; \
-    git rebase master || git rebase main; \
+    git rebase ${main_branch}; \
     set -x; \
   }; n"
 

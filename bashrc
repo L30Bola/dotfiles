@@ -7,6 +7,7 @@
 
 PATH="${PATH}:${HOME}/.local/bin:${HOME}/bin:${HOME}/go/bin:${HOME}/.kube/plugins/jordanwilson230"
 PATH="${PATH}:${HOME}/.krew/bin"
+PATH="${PATH}:${HOME}/.cargo/bin"
 export PATH
 
 if [[ $- == *i* ]]; then
@@ -150,9 +151,9 @@ if command -v fluxctl > /dev/null; then
   source <(fluxctl completion bash)
 fi
 
-if command -v cmctl > /dev/null; then
-  source <(cmctl completion bash)
-fi
+#if command -v cmctl > /dev/null; then
+#  source <(cmctl completion bash)
+#fi
 
 if command -v vcluster > /dev/null; then
   source <(vcluster completion bash)
@@ -170,6 +171,10 @@ if command -v cilium > /dev/null; then
   source <(cilium completion bash)
 fi
 
+if command -v tilt > /dev/null; then
+  source <(tilt completion bash)
+fi
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
@@ -185,7 +190,7 @@ alias netalyzr="java -jar ~/.NetalyzrCLI.jar"
 alias apgdiff="java -jar ~/.apgdiff-2.4.jar"
 alias tmux="tmux -2"
 alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias meuip="curl https://ipinfo.io/ip"
+alias meuip="curl -w '\n' ipinfo.io/ip"
 alias bashrc="vim ~/.bashrc && source ~/.bashrc"
 alias bashHist="vim ~/.bash_history"
 alias vimrc="vim ~/.vimrc"
@@ -202,12 +207,15 @@ alias kx="kubectx"
 alias kns="kubens"
 alias g="git"
 alias tf="terraform"
+alias tg="terragrunt"
 alias bb="bigbang"
 alias ka="kube-auth --auth-only"
 alias hh="hstr"
 alias d="docker"
 alias inputrc="vim ~/.inputrc && exec bash"
 alias sshconfig="vim ~/.ssh/config"
+alias watch="watch "
+alias f="fuck"
 
 # FUNCTIONS
 source "${HOME}/.vim/work/wls.sh"
@@ -232,16 +240,20 @@ if uname | grep --silent "Darwin"; then
   }
 fi
 
-#if command -v rpg-cli > /dev/null; then
-#  function cd () {
-#    if [[ "$#" -eq 0 ]]; then
-#      rpg-cli "${HOME}"
-#    else
-#      rpg-cli "$1"
-#    fi
-#    builtin cd "$(rpg-cli --pwd)"
-#  }
-#fi
+function hsbattery() {
+  local headset_status headset_emoji
+  headset_status="$(headsetcontrol -b)"
+  headset_emoji="🎧"
+  headset_lightning="⚡"
+  headset_not="🚫"
+  if echo "${headset_status}" | grep --quiet "Charging"; then
+    echo "${headset_emoji}  ${headset_lightning}"
+  elif echo "${headset_status}" | grep --quiet "%"; then
+    echo "${headset_emoji} $(ag % <<< "${headset_status}" | awk '{ print $2 }')"
+  elif echo "${headset_status}" | grep --quiet "Failed to request battery."; then
+    echo "${headset_emoji}  ${headset_not}"
+  fi
+}
 
 function md5CrtlC() {
     echo -n "$1" | md5sum | awk '{ printf $1 }' | xsel -bi
@@ -356,19 +368,6 @@ function cheat-sheet() {
     curl "https://cheat.sh/$@"
 }
 
-function hsbattery() {
-  local headset_status headset_emoji
-  headset_status=$(headsetcontrol -b)
-  headset_emoji="🎧"
-  if [[ "${headset_status}" =~ .*"Charging".* ]]; then
-    printf "%s  ⚡" "${headset_emoji}"
-  elif [[ "${headset_status}" =~ .*"%".* ]]; then
-    printf "%s  %s" "${headset_emoji}" "$(ag % <<< "${headset_status}" | awk '{ print $2 }')"
-  elif [[ "${headset_status}" =~ .*"Failed to request battery.".* ]]; then
-    printf "%s  🚫" "${headset_emoji}"
-  fi
-}
-
 # https://unix.stackexchange.com/a/83927/100610
 function __wget() {
     : ${DEBUG:=0}
@@ -405,6 +404,32 @@ function histCount() {
   local count="$1"
   HISTTIMEFORMAT="" history | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n "${count:-10}"
 }
+
+function _authy() {
+  sudo apparmor_parser -r /etc/apparmor.d/*snap-confine*
+  sudo apparmor_parser -r /var/lib/snapd/apparmor/profiles/snap-confine*
+  sudo systemctl start snapd.apparmor.service
+  /var/lib/snapd/snap/bin/authy
+}
+
+function checkRpgMode() {
+  if [[ "${RPG_MODE}" == 'true' ]]; then
+    true
+  else
+    false
+  fi
+}
+
+#if command -v rpg-cli > /dev/null; then
+#  function cd () {
+#    if [[ "$#" -eq 0 ]]; then
+#      rpg-cli "${HOME}"
+#    else
+#      rpg-cli "$1"
+#    fi
+#    builtin cd "$(rpg-cli --pwd)"
+#  }
+#fi
 
 # END FUNCTIONS
 
