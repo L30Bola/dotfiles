@@ -1,10 +1,12 @@
-NIPAH License
-* Version 1, 17 September 2022
+### License
+
+\* Version 1, 17 September 2022
 
 Copyright (c) 2022 Leonardo Gomes Godoy de Avellar
+
 Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
 
---- Preamble ---
+#### --- PREAMBLE ---
 Licenses for most forms of software remove your freedoms and/or allow others to do so. Copyleft licenses were a powerful solution to prevent them from doing so, but it comes with its own problems. This license was created to prevent any form of oppression by the use of intellectual property laws beyond the very need to defend the license (i.e. we believe in the right to defend others from aggression and oppression, but we do not believe that every form of violence is aggression and oppression).
 
 Users of this license **_must_** commit to the reality of the market and the notion of ownership over the goods that are purchased, those who buy a copy of your software are solely and exclusively responsible for all actions taken with the use of this software, in the same way, they are the rightful owners of the code and binaries they have purchased. You don't buy a pineapple by granting secondary property rights to the creators/sellers, nor should you buy software granting the right to sue, harm or threaten the integrity of any buyer to its creator/seller. In the same way that a pineapple can be used to make a juice, eat it in natura, donate, sell its parts or even throw it completely away, any purchaser/obtainer of a software should be allowed to use it at all the possible ways, freely. More than just a pineapple, software is code being contained and executed entirely on its buyer's computer, its property, it (the software) is in no way beyond "intellectually" linked to its creator/seller, but ideas publicly displayed must circulate freely, and cannot be owned by anyone. To attack or threaten anyone who buys your software in any way is to leave the intangible and touch the realm of things, it is to violate someone's legitimate property (their computer, their clothes, their own body, etc) same treatment as someone who actually assaulted another person (something you in prosecuting that person and allowing the assault against him actually did).
@@ -15,7 +17,7 @@ Of course, we also believe that the best form of software is free software to re
 
 The precise terms for this license follow.
 
---- TERMS AND CONDITIONS ---
+#### --- TERMS AND CONDITIONS ---
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
