@@ -35,7 +35,7 @@
   mm = "!mm() { \
     set +x; \
     local main_branch; \
-    main_branch=$(git symbolic-ref --short refs/remotes/origin/HEAD); \
+    main_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p'); \
     git merge --ff ${main_branch}; \
     set -x; \
   }; mm"
@@ -43,9 +43,9 @@
   n = "!n() { \
     set +x; \
     local last_branch; \
-    last_branch=$(git symbolic-ref --short HEAD); \
+    last_branch=$(git rev-parse --abbrev-ref HEAD); \
     local main_branch; \
-    main_branch=$(git symbolic-ref --short refs/remotes/origin/HEAD); \
+    main_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p'); \
     git checkout ${main_branch}; \
     git fetch; \
     git rebase; \
@@ -72,5 +72,12 @@
   s = "status"
   st = "stash"
   t = "tag"
+
+  staged = "diff --name-only --staged"
+  unstaged = "diff --name-only"
+  untracked = "ls-files --other --exclude-standard"
+  ignored = "status --ignored"
 [pull]
   rebase = true
+[init]
+  defaultBranch = master
