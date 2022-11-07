@@ -175,6 +175,10 @@ if command -v tilt > /dev/null; then
   source <(tilt completion bash)
 fi
 
+if command -v glab > /dev/null; then
+  source <(glab completion -s bash)
+fi
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
@@ -216,6 +220,7 @@ alias inputrc="vim ~/.inputrc && exec bash"
 alias sshconfig="vim ~/.ssh/config"
 alias watch="watch "
 alias f="fuck"
+alias bfg="java -jar ~/.local/lib/bfg-1.14.0.jar"
 
 # FUNCTIONS
 source "${HOME}/.vim/work/wls.sh"
@@ -431,6 +436,20 @@ function checkRpgMode() {
 #  }
 #fi
 
+function ho() {
+  tmux new-session -d -s hubble
+  tmux split-window -h -t hubble
+  tmux send -t hubble.1 \
+    "kubectl port-forward \
+      -n kube-system svc/hubble-relay \
+      --address 0.0.0.0 --address :: 4245:80" \
+  ENTER
+  tmux send -t hubble.2 \
+    "sleep 2; hubble observe -t $1 -f" \
+  ENTER
+  tmux attach-session -t hubble
+}
+
 # END FUNCTIONS
 
 ## BASH configs
@@ -440,18 +459,10 @@ if [[ -n "${TMUX}" ]]; then
 fi
 
 # Number of lines or commands to be added to history file
-if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || { [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]]; }; then
-    export HISTSIZE=-1
-else
-    export HISTSIZE=
-fi
+export HISTSIZE=-1
 
 # Number of lines or commands that are allowed to be stored on history file
-if [[ "${BASH_VERSINFO[0]}" -gt 4 ]] || { [[ ${BASH_VERSINFO[0]} -eq 4 ]] && [[ ${BASH_VERSINFO[1]} -ge 3 ]]; }; then
-    export HISTFILESIZE=-1
-else
-    export HISTFILESIZE=
-fi
+export HISTFILESIZE=-1
 
 # Date and time added to history before each command is written on the history file
 # It's formatted as: year/month/day - hour:minute:second
