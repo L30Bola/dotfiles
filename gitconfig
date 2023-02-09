@@ -32,6 +32,13 @@
     git checkout ${main_branch}; \
   }; com"
 
+  k = "!k() { \
+    set +x; \
+    git com; \
+    git pu; \
+    set -x; \
+  }; k"
+
   mm = "!mm() { \
     set +x; \
     local main_branch; \
