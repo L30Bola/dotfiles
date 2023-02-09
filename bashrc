@@ -473,6 +473,9 @@ export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 HISTCONTROL="ignoreboth"
 export HISTCONTROL
 
+HISTIGNORE="history:hstr:bashHist"
+export HISTIGNORE
+
 # append history entries..
 # Sempre concatena os comandos inseridos no bash_history
 shopt -s histappend
@@ -502,7 +505,6 @@ fi
 
 if [[ $- =~ .*i.* ]]; then
   bind '"\C-r": "\C-a hstr -- \C-j"'
-  bind '"\C-h": "\C-a bashHist \C-j"'
 fi
 
 # Bashhub.com Installation.
