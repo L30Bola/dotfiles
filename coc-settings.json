@@ -1,21 +1,19 @@
 {
   "diagnostic-languageserver.filetypes": {
-    // lint `sh` (includes `bash`) files
-    "markdown": "markdownlint",
-    "terraform": "terraform"
+    "markdown": "markdownlint"
   },
   "languageserver": {
     "terraform": {
       "command": "terraform-lsp",
-      "filetypes": ["terraform", "tf"],
-      "initializationOptions": {}
-    }//,
-    //"bash": {
-    //  "command": "bash-language-server",
-    //  "args": ["start"],
-    //  "filetypes": ["sh"],
-    //  "ignoredRootPaths": ["~"]
-    //}
+      "args": [
+      ],
+      "filetypes": [
+        "terraform",
+        "tf"
+      ],
+      "initializationOptions": {},
+      "settings": {}
+    }
   },
 
   "suggest.enablePreview": true,
