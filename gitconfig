@@ -24,6 +24,10 @@
   path = ~/.vim/gitconfigs/wls
 [includeIf "gitdir:~/ghorg/"]
   path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/projetos/local/"]
+  path = ~/.vim/gitconfigs/wls
+[includeIf "gitdir:~/scripts"]
+  path = ~/.vim/gitconfigs/wls
 
 [alias]
   com = "!com() { \

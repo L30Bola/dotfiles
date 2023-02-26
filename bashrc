@@ -89,6 +89,9 @@ export NVM_DIR
 BH_URL=http://stream.l30bola.games:3000
 export BH_URL
 
+GOBIN="${HOME}/go/bin"
+export GOBIN
+
 ## END ENVVARS
 
 ## COMPLETIONS
@@ -98,6 +101,11 @@ export BH_URL
 
 if [ -f /opt/asdf-vm/asdf.sh ]; then
   source /opt/asdf-vm/asdf.sh
+fi
+
+if [ -f ~/.asdf/asdf.sh ]; then
+  source ~/.asdf/asdf.sh
+  source ~/.asdf/completions/asdf.bash
 fi
 
 if [ -f ~/projetos/local/z/z.sh ]; then
@@ -175,8 +183,16 @@ if command -v tilt > /dev/null; then
   source <(tilt completion bash)
 fi
 
+if command -v kubectl > /dev/null; then
+  source <(kubectl completion bash)
+fi
+
+if command -v kyverno > /dev/null; then
+  source <(kyverno completion bash)
+fi
+
 if command -v glab > /dev/null; then
-  source <(glab completion -s bash)
+  source <(glab completion bash)
 fi
 
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -221,6 +237,7 @@ alias sshconfig="vim ~/.ssh/config"
 alias watch="watch "
 alias f="fuck"
 alias bfg="java -jar ~/.local/lib/bfg-1.14.0.jar"
+alias docker-compose="docker compose"
 
 # FUNCTIONS
 source "${HOME}/.vim/work/wls.sh"
@@ -495,8 +512,6 @@ export PROMPT_COMMAND
 
 if uname | grep --silent "Darwin"; then
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin:/var/lib/snapd/snap/bin"
-#else
-#  export PATH="$PATH:/opt/mssql-tools/bin:${HOME}/.local/bin"
 fi
 
 ## END BASH configs
@@ -513,6 +528,7 @@ if [ -f ~/.bashhub/bashhub.sh ]; then
     source ~/.bashhub/bashhub.sh
 fi
 
+source "${HOME}/.bash-preexec.sh"
 
 #LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
 
