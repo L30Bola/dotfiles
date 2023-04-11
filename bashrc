@@ -195,6 +195,10 @@ if command -v glab > /dev/null; then
   source <(glab completion bash)
 fi
 
+if command -v flux > /dev/null; then
+  source <(flux completion bash)
+fi
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
@@ -457,12 +461,10 @@ function ho() {
   tmux new-session -d -s hubble
   tmux split-window -h -t hubble
   tmux send -t hubble.1 \
-    "kubectl port-forward \
-      -n kube-system svc/hubble-relay \
-      --address 0.0.0.0 --address :: 4245:80" \
+    "cilium hubble port-forward &" \
   ENTER
-  tmux send -t hubble.2 \
-    "sleep 2; hubble observe -t $1 -f" \
+  tmux send -t hubble.1 \
+    "sleep 3; hubble observe -t $1 -f" \
   ENTER
   tmux attach-session -t hubble
 }
@@ -490,7 +492,7 @@ export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 HISTCONTROL="ignoreboth"
 export HISTCONTROL
 
-HISTIGNORE="history:hstr:bashHist"
+HISTIGNORE="history:hstr: hstr:bashHist"
 export HISTIGNORE
 
 # append history entries..
@@ -528,7 +530,7 @@ if [ -f ~/.bashhub/bashhub.sh ]; then
     source ~/.bashhub/bashhub.sh
 fi
 
-source "${HOME}/.bash-preexec.sh"
+#source "${HOME}/.bash-preexec.sh"
 
 #LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
 
