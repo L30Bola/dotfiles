@@ -20,10 +20,11 @@ Plug 'glench/vim-jinja2-syntax'
 Plug 'towolf/vim-helm'
 Plug 'stephpy/vim-yaml'
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 call plug#end()
 
 " Custom config from coc.vim GitHub page
-
 
 " May need for Vim (not Neovim) since coc.nvim calculates byte offset by count
 " utf-8 byte sequence
@@ -216,10 +217,12 @@ set number
 set backspace=indent,eol,start
 set background=dark
 set hlsearch
+set incsearch
 set autoindent
 set smartindent
 set mouse=nicr
 set mousehide
+set hidden
 highlight Pmenu ctermfg=Black ctermbg=DarkGray
 highlight PmenuSel ctermfg=White ctermbg=Gray cterm=underline,bold
 highlight PmenuSbar ctermfg=NONE ctermbg=DarkGray
