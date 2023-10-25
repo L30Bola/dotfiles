@@ -139,9 +139,10 @@ if command -v bigbang > /dev/null; then
   source <(bigbang completion bash)
 fi
 
-#if command -v terraform > /dev/null; then
-#  complete -C "$(command -v terraform)" terraform
-#fi
+if command -v terraform > /dev/null; then
+  complete -C "/var/lib/tfenv/versions/$(tfenv version-name)/terraform" terraform
+  complete -C "/var/lib/tfenv/versions/$(tfenv version-name)/terraform" tf
+fi
 
 if command -v mc > /dev/null; then
   complete -C "$(command -v mc)" mc
@@ -199,6 +200,11 @@ if command -v flux > /dev/null; then
   source <(flux completion bash)
 fi
 
+if [[ -d ~/.kubech/ ]]; then
+  source ~/.kubech/kubech
+  source ~/.kubech/completion/kubech.bash
+fi
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
@@ -229,6 +235,7 @@ alias wttr="curl wttr.in"
 alias k="kubectl"
 alias kx="kubectx"
 alias kns="kubens"
+alias kch="kubech"
 alias g="git"
 alias tf="terraform"
 alias tg="terragrunt"
@@ -239,7 +246,6 @@ alias d="docker"
 alias inputrc="vim ~/.inputrc && exec bash"
 alias sshconfig="vim ~/.ssh/config"
 alias watch="watch "
-alias f="fuck"
 alias bfg="java -jar ~/.local/lib/bfg-1.14.0.jar"
 alias docker-compose="docker compose"
 
@@ -467,6 +473,10 @@ function ho() {
     "sleep 3; hubble observe -t $1 -f" \
   ENTER
   tmux attach-session -t hubble
+}
+
+function lk {
+  cd "$(walk --icons "$@")"
 }
 
 # END FUNCTIONS
