@@ -1,8 +1,7 @@
 {
   "diagnostic-languageserver.filetypes": {
     "markdown": "markdownlint",
-    "terraform": "terraform",
-    "sh": "shellcheck"
+    "terraform": "terraform"
   },
   "languageserver": {
     "terraform": {
