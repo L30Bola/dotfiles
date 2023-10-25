@@ -1,14 +1,26 @@
 [user]
-  name="Leonardo Godoy"
-  email="leonardoggavellar@gmail.com"
-  username="L30Bola"
+  name = "Leonardo Godoy"
+  email = "leonardoggavellar@gmail.com"
+  username = "L30Bola"
   signingkey = CFF266C3E04E6AD6
 [core]
-  editor=vim
+  editor = vim
+  pager = "delta"
 [web]
-  browser=google-chrome
+  browser = google-chrome-stable
 [commit]
   gpgSign = true
+[interactive]
+  diffFilter = delta --color-only
+[delta]
+  navigate = true
+  light = false
+  pager = less
+  line-numbers = true
+[merge]
+  conflictstyle = diff3
+[diff]
+  colorMoved = default
 
 [url "git@git.topfreegames.com:"]
   insteadOf = https://git.topfreegames.com/
