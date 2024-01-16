@@ -34,6 +34,8 @@ if command -v gnome-keyring-daemon > /dev/null; then
 fi
 
 BAT_THEME="Coldark-Dark"
+BAT_PAGER="delta"
+PAGER="delta"
 LANG="en_US.UTF-8"
 LC_ADDRESS="en_US.UTF-8"
 LC_COLLATE="en_US.UTF-8"
@@ -48,6 +50,8 @@ LC_PAPER="pt_BR.UTF-8"
 LC_TELEPHONE="en_US.UTF-8"
 LC_TIME="pt_BR.UTF-8"
 export BAT_THEME \
+       BAT_PAGER \
+       PAGER \
        LANG \
        LC_TYPE \
        LC_NUMERIC \
@@ -475,8 +479,19 @@ function ho() {
   tmux attach-session -t hubble
 }
 
-function lk {
-  cd "$(walk --icons "$@")"
+function lk() {
+  cd "$(walk --icons "$@")" || return
+}
+
+function kgetall() {
+  namespace=$1
+  if [[ $namespace == "" ]]; then
+    namespace=$(kubens -c)
+  fi
+  mapfile -t namespaced_resources < <(kubectl api-resources --verbs=list --namespaced -o name | grep -v events | sort)
+  for namespaced_resource in "${namespaced_resources[@]}"; do
+    kubectl get --show-kind --ignore-not-found -n "${namespace}" "${namespaced_resource}"
+  done
 }
 
 # END FUNCTIONS
