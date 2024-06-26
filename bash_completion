@@ -1069,3 +1069,5 @@ complete -F _complete_alias tf
 complete -F _complete_alias bb
 complete -F _complete_alias f
 complete -F _complete_alias d
+complete -F _complete_alias h
+complete -F _complete_alias ky

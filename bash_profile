@@ -15,7 +15,7 @@ export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 HISTCONTROL="ignoreboth"
 export HISTCONTROL
 
-HISTIGNORE="history:hstr:bashHist"
+HISTIGNORE="&,'[ ]*',history:hstr:bashHist"
 export HISTIGNORE
 
 # Get the aliases and functions

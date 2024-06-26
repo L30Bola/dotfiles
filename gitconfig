@@ -75,6 +75,35 @@
     set -x; \
   }; n"
 
+  pou = "!pou() { \
+    set +x; \
+    local actual_branch; \
+    actual_branch=$(git rev-parse --abbrev-ref HEAD); \
+    git p -u origin ${actual_branch}; \
+    set -x; \
+  }; pou"
+
+  pp = "!pp() { \
+    set +x; \
+    local commit_message; \
+    commit_message=$(git pou 2>&1); \
+    echo \"$commit_message\"; \
+    local url; \
+    url=$(grep -A1 'To create a merge request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+    if [[ -z ${url} ]]; then \
+      url=$(grep -A1 'View merge request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+    fi; \
+    xdg-open ${url} | cat; \
+    set -x; \
+  }; pp"
+
+  stk = "!stk() { \
+    set +x; \
+    git st; \
+    git k; \
+    git st pop; \
+  }; stk"
+
   a = "add"
   b = "branch"
   c = "commit"
@@ -90,6 +119,7 @@
   p = "push"
   pu = "pull --rebase"
   r = "rebase"
+  rh = "reset HEAD"
   s = "status"
   st = "stash"
   t = "tag"

@@ -1,7 +1,7 @@
 # shellcheck disable=SC1117
 # shellcheck disable=SC2034
 
-#LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 begin="${EPOCHREALTIME}"
+LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 begin="${EPOCHREALTIME}"
 
 ## ENVVARS
 
@@ -27,11 +27,11 @@ if [[ $- == *i* ]]; then
     underline=$(tput smul)
 fi
 
-if command -v gnome-keyring-daemon > /dev/null; then
-    if ! ps aux | grep --silent '[g]nome-keyring-daemon'; then
-      export "$(gnome-keyring-daemon --daemonize --start)"
-    fi
-fi
+#if command -v gnome-keyring-daemon > /dev/null; then
+#    if ! ps aux | grep --silent '[g]nome-keyring-daemon'; then
+#      export "$(gnome-keyring-daemon --daemonize --start)"
+#    fi
+#fi
 
 BAT_THEME="Coldark-Dark"
 BAT_PAGER="delta"
@@ -90,11 +90,14 @@ export HSTR_CONFIG
 NVM_DIR="$HOME/.nvm"
 export NVM_DIR
 
-BH_URL=http://stream.l30bola.games:3000
-export BH_URL
-
 GOBIN="${HOME}/go/bin"
 export GOBIN
+
+if [ -f "/usr/lib/ssh/gnome-ssh-askpass4" ] ; then
+  SSH_ASKPASS="/usr/lib/ssh/gnome-ssh-askpass4"
+  SSH_AUTH_SOCK=/run/user/1000/gcr/ssh
+  export SSH_ASKPASS SSH_AUTH_SOCK
+fi
 
 ## END ENVVARS
 
@@ -137,6 +140,10 @@ fi
 
 if command -v helm > /dev/null; then
   source <(helm completion bash)
+fi
+
+if command -v helm diff completion bash > /dev/null; then
+  source <(helm diff completion bash)
 fi
 
 if command -v bigbang > /dev/null; then
@@ -209,6 +216,10 @@ if [[ -d ~/.kubech/ ]]; then
   source ~/.kubech/completion/kubech.bash
 fi
 
+if command -v hubble > /dev/null; then
+  source <(hubble completion bash)
+fi
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
@@ -252,6 +263,9 @@ alias sshconfig="vim ~/.ssh/config"
 alias watch="watch "
 alias bfg="java -jar ~/.local/lib/bfg-1.14.0.jar"
 alias docker-compose="docker compose"
+alias h="helm"
+alias f="flux"
+alias ky="kyverno"
 
 # FUNCTIONS
 source "${HOME}/.vim/work/wls.sh"
@@ -338,6 +352,8 @@ function transfer() {
 
     # cat output link
     cat "$tmpfile"
+
+    echo
 
     # cleanup
     rm -f "$tmpfile"
@@ -494,6 +510,14 @@ function kgetall() {
   done
 }
 
+function delk8s() {
+  cluster_name="$1"
+
+  kubectl config unset "users.$cluster_name"
+  kubectl config unset "contexts.$cluster_name"
+  kubectl config unset "clusters.$cluster_name"
+}
+
 # END FUNCTIONS
 
 ## BASH configs
@@ -517,7 +541,7 @@ export HISTTIMEFORMAT="%Y/%m/%d - %T: "
 HISTCONTROL="ignoreboth"
 export HISTCONTROL
 
-HISTIGNORE="history:hstr: hstr:bashHist"
+HISTIGNORE="&,'[ ]*',history:hstr:bashHist"
 export HISTIGNORE
 
 # append history entries..
@@ -546,7 +570,7 @@ fi
 ## Binds
 
 if [[ $- =~ .*i.* ]]; then
-  bind '"\C-r": "\C-a hstr -- \C-j"'
+  bind '"\C-r": "\C-ahstr -- \C-j"'
 fi
 
 # Bashhub.com Installation.
@@ -557,6 +581,8 @@ fi
 
 #source "${HOME}/.bash-preexec.sh"
 
-#LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
+LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
 
-#echo "duration: $(calc -p $end - $begin) seconds."
+echo "duration: $(calc -p $end - $begin) seconds."
+
+#complete -C /home/godoy/.asdf/installs/boundary/0.14.5/bin/boundary boundary
