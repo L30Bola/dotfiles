@@ -501,12 +501,18 @@ function lk() {
 
 function kgetall() {
   namespace=$1
-  if [[ $namespace == "" ]]; then
+  context=$2
+  if [[ "$namespace" == "" ]]; then
     namespace=$(kubens -c)
   fi
-  mapfile -t namespaced_resources < <(kubectl api-resources --verbs=list --namespaced -o name | grep -v events | sort)
+  if [[ "$context" == "" ]]; then
+    context=$(kubectx -c)
+  fi
+  echo "cluster: $context"
+  echo "namespace: $namespace"
+  mapfile -t namespaced_resources < <(kubectl api-resources --verbs=list --namespaced -o name --context "$context" | grep -v events | sort)
   for namespaced_resource in "${namespaced_resources[@]}"; do
-    kubectl get --show-kind --ignore-not-found -n "${namespace}" "${namespaced_resource}"
+    kubectl get --show-kind --ignore-not-found -n "${namespace}" "${namespaced_resource}" --context "$context"
   done
 }
 
@@ -571,12 +577,6 @@ fi
 
 if [[ $- =~ .*i.* ]]; then
   bind '"\C-r": "\C-ahstr -- \C-j"'
-fi
-
-# Bashhub.com Installation.
-# This Should be at the EOF. https://bashhub.com/docs
-if [ -f ~/.bashhub/bashhub.sh ]; then
-    source ~/.bashhub/bashhub.sh
 fi
 
 #source "${HOME}/.bash-preexec.sh"
