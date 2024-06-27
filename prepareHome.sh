@@ -6,7 +6,7 @@ declare force absoluteScriptDir
 force=false
 
 declare -a files_to_be_linked dirs_to_be_linked
-files_to_be_linked=( "bash_profile" "bashrc" "gitconfig" "pythonrc" "tmux.conf" "vimrc" "bash_completion" )
+files_to_be_linked=( "bash_profile" "bashrc" "gitconfig" "pythonrc" "tmux.conf" "vimrc" "bash_completion" "blerc" )
 dirs_to_be_linked=( "tmux" )
 
 declare -i temp1 temp2 temp3 

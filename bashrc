@@ -1,6 +1,13 @@
 # shellcheck disable=SC1117
 # shellcheck disable=SC2034
 
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && [[ $- != *i* ]] && return
+
+if [ -f ~/.local/share/blesh/ble.sh ]; then
+  source ~/.local/share/blesh/ble.sh --noattach
+fi
+
 LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 begin="${EPOCHREALTIME}"
 
 ## ENVVARS
@@ -103,9 +110,6 @@ fi
 
 ## COMPLETIONS
 
-# If not running interactively, don't do anything
-[ -z "$PS1" ] && return
-
 if [ -f /opt/asdf-vm/asdf.sh ]; then
   source /opt/asdf-vm/asdf.sh
 fi
@@ -116,13 +120,22 @@ if [ -f ~/.asdf/asdf.sh ]; then
 fi
 
 if [ -f ~/projetos/local/z/z.sh ]; then
-    source ~/projetos/local/z/z.sh
+  source ~/projetos/local/z/z.sh
 fi
 
 # Use bash-completion, if available
 # shellcheck disable=SC1091
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
+
+_ble_contrib_fzf_base=$(asdf where fzf)
+
+if [[ ${BLE_VERSION-} ]]; then
+  ble-import -d integration/fzf-completion
+  ble-import -d integration/fzf-key-bindings
+else
+  source "$(asdf where fzf)/shell/completion.bash" 2> /dev/null
+fi
 
 if command -v brew > /dev/null; then
   # bash_completion
@@ -237,6 +250,7 @@ alias tmux="tmux -2"
 alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias meuip="curl -w '\n' ipinfo.io/ip"
 alias bashrc="vim ~/.bashrc && source ~/.bashrc"
+alias blerc="vim ~/.blerc && source ~/.bashrc"
 alias bashHist="vim ~/.bash_history"
 alias vimrc="vim ~/.vimrc"
 alias gitconfig="vim ~/.gitconfig"
@@ -564,8 +578,8 @@ shopt -s histverify
 # After each command, save and reload history
 # Após cada comando, o bash_history é salvo e "relido"
 # Alguns programas não conseguem resolver essa variável
-PROMPT_COMMAND="history -a; history -r; $PROMPT_COMMAND"
-export PROMPT_COMMAND
+#PROMPT_COMMAND="history -a; history -c; history -r"
+#export PROMPT_COMMAND
 
 if uname | grep --silent "Darwin"; then
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin:/var/lib/snapd/snap/bin"
@@ -579,10 +593,9 @@ if [[ $- =~ .*i.* ]]; then
   bind '"\C-r": "\C-ahstr -- \C-j"'
 fi
 
-#source "${HOME}/.bash-preexec.sh"
-
 LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
 
-echo "duration: $(calc -p $end - $begin) seconds."
+echo "duration: $(calc -p "$end" - "$begin") seconds."
 
-#complete -C /home/godoy/.asdf/installs/boundary/0.14.5/bin/boundary boundary
+[[ ${BLE_VERSION-} ]] && ble-attach
+

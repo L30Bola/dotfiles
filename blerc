@@ -1,0 +1,5 @@
+bleopt history_share=1
+bleopt pager=delta
+bleopt editor=vim
+bleopt history_lazyload=1
+bleopt exec_restore_pipestatus=
