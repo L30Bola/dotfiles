@@ -23,6 +23,10 @@ if [ -f ~/.bashrc ]; then
     source ~/.bashrc
 fi
 
+if [ -f ~/.asdf/plugins/java/set-java-home.bash ]; then
+  source ~/.asdf/plugins/java/set-java-home.bash
+fi
+
 #if [ -n "$SSH_AUTH_SOCK" ] ; then
 #    eval "$(ssh-agent -k)"
 #fi

@@ -501,9 +501,9 @@ function ho() {
   tmux new-session -d -s hubble
   tmux split-window -h -t hubble
   tmux send -t hubble.1 \
-    "cilium hubble port-forward &" \
+    "cilium hubble port-forward" \
   ENTER
-  tmux send -t hubble.1 \
+  tmux send -t hubble.2 \
     "sleep 3; hubble observe -t $1 -f" \
   ENTER
   tmux attach-session -t hubble
@@ -537,6 +537,20 @@ function delk8s() {
   kubectl config unset "contexts.$cluster_name"
   kubectl config unset "clusters.$cluster_name"
 }
+
+sort_history() {
+  # /^$/d            # skip blank lines
+  # /^#/N            # append next line to timestamp
+  # /^#/!s/^/#0\n/   # command without timestamp - prefix with #0
+  # s/#//            # remove initial #
+  # y/\n/ /          # convert newline to space
+  # s/(\S+) /#\1\n/  # restore the timestamp
+
+  sed -e '/^$/d' -e '/^#/N' -e '/^#/!s/^/#0\n/' \
+      -e 's/#//' -e 'y/\n/ /' <<<"$in" \
+    | sort -n | sed -e 's/\(\S\+\) /#\1\n/'
+}
+
 
 # END FUNCTIONS
 
@@ -590,7 +604,8 @@ fi
 ## Binds
 
 if [[ $- =~ .*i.* ]]; then
-  bind '"\C-r": "\C-ahstr -- \C-j"'
+  bind '"\M-e": "\C-ahstr -- \C-j"'
+  ble-bind -m 'emacs' -x "C-b" '__atuin_history --keymap-mode=emacs'
 fi
 
 LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
@@ -599,3 +614,4 @@ echo "duration: $(calc -p "$end" - "$begin") seconds."
 
 [[ ${BLE_VERSION-} ]] && ble-attach
 
+eval "$(atuin init bash --disable-up-arrow)"
