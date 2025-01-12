@@ -233,6 +233,10 @@ if command -v hubble > /dev/null; then
   source <(hubble completion bash)
 fi
 
+if command -v chainsaw > /dev/null; then
+  source <(chainsaw completion bash)
+fi
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
