@@ -1,0 +1,222 @@
+---
+- name: Install needed stuff
+  gather_facts: true
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Install Homebrew
+      community.general.homebrew:
+        state: present
+        update_homebrew: true
+        upgrade_all: true
+      tags:
+        - homebrew
+        - install
+
+    - name: Install Rosetta 2
+      ansible.builtin.command:
+        cmd: softwareupdate --install-rosetta --agree-to-license
+      register: rosetta2
+      changed_when: rosetta2.rc != 0
+      tags:
+        - rosetta2
+
+    - name: Install packages
+      community.general.homebrew:
+        name:
+          - asdf
+          - atuin
+          - bash
+          - bash-completion@2
+          - bat
+          - binutils
+          - calc
+          - coreutils
+          - curl
+          - diffutils
+          - ed
+          - file-formula
+          - findutils
+          - gawk
+          - git
+          - git-delta
+          - gnu-getopt
+          - gnu-indent
+          - gnu-sed
+          - gnu-tar
+          - gnu-which
+          - gnupg
+          - gnutls
+          - gpatch
+          - grep
+          - gzip
+          - htop
+          - jq
+          - kind
+          - kubectx
+          - kubespy
+          - less
+          - m4
+          - make
+          - openssh
+          - pipx
+          - python
+          - rclone
+          - rsync
+          - the_silver_searcher
+          - tmux
+          - unzip
+          - vim
+          - watch
+          - wdiff
+          - wget
+          - yq
+          - z
+        state: present
+      tags:
+        - homebrew
+        - packages
+        - quarantine
+
+    # Sometimes I've seen the need to admin password, so keep an eye on this
+    - name: Install cask packages
+      community.general.homebrew_cask:
+        name:
+          - bitwarden
+          - cmake
+          - dehesselle-meld
+          - docker
+          - google-chrome
+          - iterm2
+          - karabiner-elements
+          - logitech-g-hub
+          - spotify
+          - steelseries-gg
+          - telegram-desktop
+          - visual-studio-code
+          - xbar
+        state: present
+      tags:
+        - homebrew
+        - casks
+        - quarantine
+
+    - name: Install packages without quarantine
+      community.general.homebrew:
+        name:
+          - grishka/grishka/neardrop
+          - youtype
+        state: present
+        install_options:
+          - no-quarantine
+      tags:
+        - homebrew
+        - packages
+        - no-quarantine
+
+    - name: Install casks without quarantine
+      community.general.homebrew_cask:
+        name:
+          - mos
+          - maccy
+        state: present
+        install_options:
+          - no-quarantine
+      tags:
+        - homebrew
+        - casks
+        - no-quarantine
+
+    - name: Install asdf plugins
+      ansible.builtin.command:
+        cmd: asdf plugin-add {{ item }}
+      register: asdf_plugins
+      changed_when: asdf_plugins.rc != 0
+      loop:
+        - fzf
+        - golang
+        - helm
+        - kubectl
+      tags:
+        - asdf
+        - plugins
+
+    - name: Install asdf versions
+      ansible.builtin.command:
+        cmd: asdf install {{ item }}
+      register: asdf_versions
+      changed_when: asdf_versions.rc != 0
+      loop:
+        - fzf latest
+        - golang latest
+        - helm latest
+        - kubectl latest
+      tags:
+        - asdf
+        - versions
+
+    # Need to figure a proper way of not erroring when the plugin is already installed
+    - name: Install Helm Diff plugin
+      ansible.builtin.command:
+        cmd: helm plugin install https://github.com/databus23/helm-diff
+      register: helm_diff
+      changed_when: helm_diff.rc != 0
+      ignore_errors: true
+      tags:
+        - helm
+        - plugin
+        - diff
+
+    - name: Set global asdf versions
+      ansible.builtin.command:
+        cmd: asdf global {{ item }}
+      register: asdf_global
+      changed_when: asdf_global.rc != 0
+      loop:
+        - fzf latest
+        - golang latest
+        - helm latest
+        - kubectl latest
+      tags:
+        - asdf
+        - global
+
+    - name: Clone ble.sh repository
+      ansible.builtin.git:
+        dest: ~/ble.sh
+        clone: true
+        recursive: true
+        depth: 1
+        repo: https://github.com/akinomyoga/ble.sh.git
+      tags:
+        - ble.sh
+        - git
+
+    - name: Install ble.sh
+      ansible.builtin.command:
+        cmd: gmake -C ble.sh install PREFIX="{{ lookup('env', 'HOME') }}/.local"
+        chdir: "{{ lookup('env', 'HOME') }}"
+        creates: "{{ lookup('env', 'HOME') }}/.local/share/blesh/ble.sh"
+      register: ble_sh_install
+      changed_when: ble_sh_install.rc != 0
+      tags:
+        - ble.sh
+        - install
+
+    - name: Setup dotfiles (create symbolic links)
+      ansible.builtin.file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+      with_items:
+        - { src: "{{ playbook_dir }}/../bash_profile", dest: "~/.bash_profile" }
+        - { src: "{{ playbook_dir }}/../bashrc", dest: "~/.bashrc" }
+        - { src: "{{ playbook_dir }}/../gitconfig", dest: "~/.gitconfig" }
+        - { src: "{{ playbook_dir }}/../pythonrc", dest: "~/.pythonrc" }
+        - { src: "{{ playbook_dir }}/../tmux.conf", dest: "~/.tmux.conf" }
+        - { src: "{{ playbook_dir }}/../vimrc", dest: "~/.vimrc" }
+        - { src: "{{ playbook_dir }}/../bash_completion", dest: "~/.bash_completion" }
+        - { src: "{{ playbook_dir }}/../blerc", dest: "~/.blerc" }
+      tags:
+        - dotfiles
+        - setup

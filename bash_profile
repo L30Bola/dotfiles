@@ -18,6 +18,10 @@ export HISTCONTROL
 HISTIGNORE="&,'[ ]*',history:hstr:bashHist"
 export HISTIGNORE
 
+if [ -d "/opt/homebrew" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
     source ~/.bashrc

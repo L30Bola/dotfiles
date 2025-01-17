@@ -24,5 +24,6 @@
   "suggest.timeout": 5000,
   "git.enableGutters": true,
   "yaml.format.enable": true,
-  "yaml.completion": true
+  "yaml.completion": true,
+  "snippets.ultisnips.pythonPrompt": false
 }

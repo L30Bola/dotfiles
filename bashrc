@@ -17,6 +17,13 @@ PATH="${PATH}:${HOME}/.krew/bin"
 PATH="${PATH}:${HOME}/.cargo/bin"
 export PATH
 
+
+if uname | grep --silent "Darwin"; then
+  PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$(brew --prefix)/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin"
+  export PATH
+fi
+
+
 if [[ $- == *i* ]]; then
     reset=$(tput sgr0)
     bold=$(tput bold)
@@ -119,8 +126,16 @@ if [ -f ~/.asdf/asdf.sh ]; then
   source ~/.asdf/completions/asdf.bash
 fi
 
+if [ -f "$(brew --prefix)/opt/asdf/libexec/asdf.sh" ]; then
+  source "$(brew --prefix)/opt/asdf/libexec/asdf.sh"
+fi
+
 if [ -f ~/projetos/local/z/z.sh ]; then
   source ~/projetos/local/z/z.sh
+fi
+
+if [ -f "$(brew --prefix)/etc/profile.d/z.sh" ]; then
+  source "$(brew --prefix)/etc/profile.d/z.sh"
 fi
 
 # Use bash-completion, if available
@@ -243,6 +258,11 @@ fi
 ## END COMPLETIONS
 
 # ALIASES
+
+if uname | grep -q "Darwin"; then
+  alias bash="$(brew --prefix)/bin/bash"
+fi
+
 alias ls='ls --color=auto'
 #alias grep='grep --color=always'
 alias dockerm="docker rm \$(docker ps -a -q)"
@@ -259,7 +279,7 @@ alias bashHist="vim ~/.bash_history"
 alias vimrc="vim ~/.vimrc"
 alias gitconfig="vim ~/.gitconfig"
 if uname | grep -q "Darwin"; then
-    alias btime="/usr/local/opt/gnu-time/libexec/gnubin/time --format='\n%C took %e seconds.'"
+    alias btime="$(brew --prefix)/opt/gnu-time/libexec/gnubin/time --format='\n%C took %e seconds.'"
 else
     alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
 fi
@@ -286,7 +306,10 @@ alias f="flux"
 alias ky="kyverno"
 
 # FUNCTIONS
-source "${HOME}/.vim/work/wls.sh"
+if [ -f "${HOME}/.vim/work/wls.sh" ]; then
+  source "${HOME}/.vim/work/wls.sh"
+fi
+
 
 function home() {
   export CDPATH="$HOME"
@@ -599,10 +622,6 @@ shopt -s histverify
 #PROMPT_COMMAND="history -a; history -c; history -r"
 #export PROMPT_COMMAND
 
-if uname | grep --silent "Darwin"; then
-  export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin:/var/lib/snapd/snap/bin"
-fi
-
 ## END BASH configs
 
 ## Binds
@@ -617,5 +636,8 @@ LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
 echo "duration: $(calc -p "$end" - "$begin") seconds."
 
 [[ ${BLE_VERSION-} ]] && ble-attach
+
+defaults write -g InitialKeyRepeat -int 11
+defaults write -g KeyRepeat -int 1
 
 eval "$(atuin init bash --disable-up-arrow)"
