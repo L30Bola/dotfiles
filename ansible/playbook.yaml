@@ -26,6 +26,7 @@
         name:
           - asdf
           - atuin
+          - awscli
           - bash
           - bash-completion@2
           - bat
@@ -63,6 +64,7 @@
           - python
           - rclone
           - rsync
+          - syncthing
           - the_silver_searcher
           - tmux
           - unzip
