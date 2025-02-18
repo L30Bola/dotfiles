@@ -71,7 +71,7 @@
     main_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p'); \
     git k; \
     git checkout ${last_branch}; \
-    git merge ${main_branch}; \
+    git rebase ${main_branch}; \
     set -x; \
   }; n"
 
@@ -83,7 +83,7 @@
     set -x; \
   }; pou"
 
-  pp = "!pp() { \
+  pgl = "!pgl() { \
     set +x; \
     local commit_message; \
     commit_message=$(git pou 2>&1); \
@@ -93,9 +93,23 @@
     if [[ -z ${url} ]]; then \
       url=$(grep -A1 'View merge request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
     fi; \
-    xdg-open ${url} | cat; \
+    open -u ${url} | cat; \
     set -x; \
-  }; pp"
+  }; pgl"
+
+  pgh = "!pgh() { \
+    set +x; \
+    local commit_message; \
+    commit_message=$(git pou 2>&1); \
+    echo \"$commit_message\"; \
+    local url; \
+    url=$(grep -A1 'To create a pull request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+    if [[ -z ${url} ]]; then \
+      url=$(grep -A1 'View pull request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+    fi; \
+    open -u ${url} | cat; \
+    set -x; \
+  }; pgh"
 
   stk = "!stk() { \
     set +x; \
@@ -130,5 +144,7 @@
   ignored = "status --ignored"
 [pull]
   rebase = true
+[branch]
+  autosetuprebase = always
 [init]
   defaultBranch = master

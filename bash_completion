@@ -1071,3 +1071,4 @@ complete -F _complete_alias f
 complete -F _complete_alias d
 complete -F _complete_alias h
 complete -F _complete_alias ky
+complete -F _complete_alias a

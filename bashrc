@@ -12,17 +12,20 @@ LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 begin="${EPOCHREALTIME}"
 
 ## ENVVARS
 
-PATH="${PATH}:${HOME}/.local/bin:${HOME}/bin:${HOME}/go/bin:${HOME}/.kube/plugins/jordanwilson230"
+PATH="${PATH}:${HOME}/.local/bin:${HOME}/bin:${HOME}/go/bin"
 PATH="${PATH}:${HOME}/.krew/bin"
 PATH="${PATH}:${HOME}/.cargo/bin"
 export PATH
 
 
 if uname | grep --silent "Darwin"; then
-  PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$(brew --prefix)/opt/gnu-time/libexec/gnubin:$PATH:${HOME}/.local/bin"
+  PATH="$PATH:$(brew --prefix)/opt/coreutils/libexec/gnubin:$(brew --prefix)/opt/gnu-time/libexec/gnubin:${HOME}/.local/bin"
   export PATH
 fi
 
+ASDF_DATA_DIR=/Users/leonardo.godoy/.asdf
+export ASDF_DATA_DIR
+export PATH="$ASDF_DATA_DIR/shims:$PATH"
 
 if [[ $- == *i* ]]; then
     reset=$(tput sgr0)
@@ -113,22 +116,28 @@ if [ -f "/usr/lib/ssh/gnome-ssh-askpass4" ] ; then
   export SSH_ASKPASS SSH_AUTH_SOCK
 fi
 
+
+if uname | grep -q "Darwin"; then
+  GPG_TTY=$(tty)
+  export GPG_TTY
+fi
+
 ## END ENVVARS
 
 ## COMPLETIONS
 
-if [ -f /opt/asdf-vm/asdf.sh ]; then
-  source /opt/asdf-vm/asdf.sh
-fi
-
-if [ -f ~/.asdf/asdf.sh ]; then
-  source ~/.asdf/asdf.sh
-  source ~/.asdf/completions/asdf.bash
-fi
-
-if [ -f "$(brew --prefix)/opt/asdf/libexec/asdf.sh" ]; then
-  source "$(brew --prefix)/opt/asdf/libexec/asdf.sh"
-fi
+#if [ -f /opt/asdf-vm/asdf.sh ]; then
+#  source /opt/asdf-vm/asdf.sh
+#fi
+#
+#if [ -f ~/.asdf/asdf.sh ]; then
+#  source ~/.asdf/asdf.sh
+#  source ~/.asdf/completions/asdf.bash
+#fi
+#
+#if [ -f "$(brew --prefix)/opt/asdf/libexec/asdf.sh" ]; then
+#  source "$(brew --prefix)/opt/asdf/libexec/asdf.sh"
+#fi
 
 if [ -f ~/projetos/local/z/z.sh ]; then
   source ~/projetos/local/z/z.sh
@@ -252,6 +261,10 @@ if command -v chainsaw > /dev/null; then
   source <(chainsaw completion bash)
 fi
 
+if command -v asdf > /dev/null; then
+  source <(asdf completion bash)
+fi
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
@@ -261,6 +274,7 @@ fi
 
 if uname | grep -q "Darwin"; then
   alias bash="$(brew --prefix)/bin/bash"
+  alias stty="/bin/stty" # https://unix.stackexchange.com/a/493788/100610
 fi
 
 alias ls='ls --color=auto'
@@ -283,7 +297,7 @@ if uname | grep -q "Darwin"; then
 else
     alias btime="/usr/bin/time --format='\n%C took %e seconds.'"
 fi
-alias docker="btime docker"
+#alias docker="btime docker"
 alias wttr="curl wttr.in"
 alias k="kubectl"
 alias kx="kubectx"
@@ -304,6 +318,7 @@ alias docker-compose="docker compose"
 alias h="helm"
 alias f="flux"
 alias ky="kyverno"
+alias a="argocd"
 
 # FUNCTIONS
 if [ -f "${HOME}/.vim/work/wls.sh" ]; then

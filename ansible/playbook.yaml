@@ -1,5 +1,5 @@
 ---
-- name: Install needed stuff
+- name: L30Bola MacOs Setup
   gather_facts: true
   hosts: localhost
   connection: local
@@ -32,11 +32,14 @@
           - bat
           - binutils
           - calc
+          - cilium-cli
+          - clusterctl
           - coreutils
           - curl
           - diffutils
           - ed
           - file-formula
+          - fileicon
           - findutils
           - gawk
           - git
@@ -64,7 +67,10 @@
           - python
           - rclone
           - rsync
+          - sops
+          - stern
           - syncthing
+          - tailscale
           - the_silver_searcher
           - tmux
           - unzip
@@ -84,19 +90,26 @@
     - name: Install cask packages
       community.general.homebrew_cask:
         name:
+          # - bartender
+          - background-music
           - bitwarden
           - cmake
           - dehesselle-meld
+          - discord
           - docker
+          - font-fira-code-nerd-font
+          - font-fira-mono-nerd-font
+          - font-inconsolata-nerd-font
+          - font-roboto-mono-nerd-font
           - google-chrome
           - iterm2
-          - karabiner-elements
           - logitech-g-hub
+          - multitouch
+          - rectangle
           - spotify
           - steelseries-gg
           - telegram-desktop
           - visual-studio-code
-          - xbar
         state: present
       tags:
         - homebrew
@@ -131,31 +144,60 @@
 
     - name: Install asdf plugins
       ansible.builtin.command:
-        cmd: asdf plugin-add {{ item }}
+        cmd: asdf plugin add {{ item }}
       register: asdf_plugins
       changed_when: asdf_plugins.rc != 0
       loop:
         - fzf
         - golang
         - helm
+        - sops
         - kubectl
+        - python
       tags:
         - asdf
         - plugins
 
-    - name: Install asdf versions
+    - name: Set global asdf versions
       ansible.builtin.command:
-        cmd: asdf install {{ item }}
-      register: asdf_versions
-      changed_when: asdf_versions.rc != 0
+        cmd: asdf set -u {{ item }}
+      register: asdf_global
+      changed_when: asdf_global.rc != 0
       loop:
         - fzf latest
         - golang latest
         - helm latest
-        - kubectl latest
+        - kubectl 1.30.4
+        - sops 3.8.1
+        - python 3.13.2
+      tags:
+        - asdf
+        - global
+
+    - name: Install asdf versions
+      ansible.builtin.command:
+        cmd: asdf install
+      register: asdf_versions
+      changed_when: asdf_versions.rc != 0
       tags:
         - asdf
         - versions
+
+    - name: Set Application Icons
+      ansible.builtin.command:
+        cmd: fileicon set "/Applications/{{ item.name }}" "{{ item.icon }}"
+      loop:
+        - name: "Visual Studio Code.app"
+          icon: "{{ playbook_dir }}/../icons/vscode.icns"
+        - name: "Google Chrome.app"
+          icon: "{{ playbook_dir }}/../icons/chrome.icns"
+        - name: "Spotify.app"
+          icon: "{{ playbook_dir }}/../icons/spotify.icns"
+      register: application_icons
+      changed_when: application_icons.rc != 0
+      tags:
+        - application
+        - icons
 
     # Need to figure a proper way of not erroring when the plugin is already installed
     - name: Install Helm Diff plugin
@@ -168,20 +210,6 @@
         - helm
         - plugin
         - diff
-
-    - name: Set global asdf versions
-      ansible.builtin.command:
-        cmd: asdf global {{ item }}
-      register: asdf_global
-      changed_when: asdf_global.rc != 0
-      loop:
-        - fzf latest
-        - golang latest
-        - helm latest
-        - kubectl latest
-      tags:
-        - asdf
-        - global
 
     - name: Clone ble.sh repository
       ansible.builtin.git:
@@ -211,14 +239,22 @@
         dest: "{{ item.dest }}"
         state: link
       with_items:
-        - { src: "{{ playbook_dir }}/../bash_profile", dest: "~/.bash_profile" }
-        - { src: "{{ playbook_dir }}/../bashrc", dest: "~/.bashrc" }
-        - { src: "{{ playbook_dir }}/../gitconfig", dest: "~/.gitconfig" }
-        - { src: "{{ playbook_dir }}/../pythonrc", dest: "~/.pythonrc" }
-        - { src: "{{ playbook_dir }}/../tmux.conf", dest: "~/.tmux.conf" }
-        - { src: "{{ playbook_dir }}/../vimrc", dest: "~/.vimrc" }
-        - { src: "{{ playbook_dir }}/../bash_completion", dest: "~/.bash_completion" }
-        - { src: "{{ playbook_dir }}/../blerc", dest: "~/.blerc" }
+        - src: "{{ playbook_dir }}/../bash_profile"
+          dest: "~/.bash_profile"
+        - src: "{{ playbook_dir }}/../bashrc"
+          dest: "~/.bashrc"
+        - src: "{{ playbook_dir }}/../gitconfig"
+          dest: "~/.gitconfig"
+        - src: "{{ playbook_dir }}/../pythonrc"
+          dest: "~/.pythonrc"
+        - src: "{{ playbook_dir }}/../tmux.conf"
+          dest: "~/.tmux.conf"
+        - src: "{{ playbook_dir }}/../vimrc"
+          dest: "~/.vimrc"
+        - src: "{{ playbook_dir }}/../bash_completion"
+          dest: "~/.bash_completion"
+        - src: "{{ playbook_dir }}/../blerc"
+          dest: "~/.blerc"
       tags:
         - dotfiles
         - setup

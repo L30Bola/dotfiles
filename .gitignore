@@ -10,3 +10,4 @@ work/*
 gitconfigs/*
 !gitconfigs/*.gpg
 undodir/
+.DS_Store
