@@ -120,7 +120,7 @@
       community.general.homebrew:
         name:
           - grishka/grishka/neardrop
-          - youtype
+          # - youtype
         state: present
         install_options:
           - no-quarantine
@@ -193,6 +193,8 @@
           icon: "{{ playbook_dir }}/../icons/chrome.icns"
         - name: "Spotify.app"
           icon: "{{ playbook_dir }}/../icons/spotify.icns"
+        - name: "Telegram Desktop.app"
+          icon: "{{ playbook_dir }}/../icons/telegram.icns"
       register: application_icons
       changed_when: application_icons.rc != 0
       tags:
