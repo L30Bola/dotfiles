@@ -98,9 +98,6 @@ export LS_COLORS
 YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35"
 export YAOURT_COLORS
 
-PS1="\[$reset\]\[$bold\][\[$blue\]\u\[$white\]@\[$green\]\h \[$red\]\t \[$magenta\]\W\[$white\]]:\\$\[$reset\] "
-export PS1
-
 HSTR_CONFIG=hicolor,case-sensitive,keywords-matching,raw-history-view,prompt-bottom
 export HSTR_CONFIG
 
@@ -124,7 +121,7 @@ fi
 
 ## END ENVVARS
 
-## COMPLETIONS
+## COMPLETIONS/SOURCES
 
 #if [ -f /opt/asdf-vm/asdf.sh ]; then
 #  source /opt/asdf-vm/asdf.sh
@@ -135,16 +132,9 @@ fi
 #  source ~/.asdf/completions/asdf.bash
 #fi
 #
-#if [ -f "$(brew --prefix)/opt/asdf/libexec/asdf.sh" ]; then
-#  source "$(brew --prefix)/opt/asdf/libexec/asdf.sh"
-#fi
 
 if [ -f ~/projetos/local/z/z.sh ]; then
   source ~/projetos/local/z/z.sh
-fi
-
-if [ -f "$(brew --prefix)/etc/profile.d/z.sh" ]; then
-  source "$(brew --prefix)/etc/profile.d/z.sh"
 fi
 
 # Use bash-completion, if available
@@ -169,6 +159,18 @@ if command -v brew > /dev/null; then
   # bash_completion@2
   [[ -r "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]] && \
     . "$(brew --prefix)/etc/profile.d/bash_completion.sh"
+
+  if [ -f "$(brew --prefix)/etc/profile.d/z.sh" ]; then
+    source "$(brew --prefix)/etc/profile.d/z.sh"
+  fi
+
+  #if [ -f "$(brew --prefix)/opt/asdf/libexec/asdf.sh" ]; then
+  #  source "$(brew --prefix)/opt/asdf/libexec/asdf.sh"
+  #fi
+
+  if [ -f $(brew --prefix)/opt/kube-ps1/share/kube-ps1.sh ]; then
+    source "$(brew --prefix)/opt/kube-ps1/share/kube-ps1.sh"
+  fi
 fi
 
 if command -v ketall > /dev/null; then
@@ -268,7 +270,17 @@ fi
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-## END COMPLETIONS
+if [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
+  if [[ ! -e "${HOME}/.iterm2_shell_integration.bash" ]]; then
+    if [[ ! -e "$HOME/install_shell_integration.sh" ]]; then
+      curl -fsSLo "$HOME/install_shell_integration.sh"  https://iterm2.com/shell_integration/install_shell_integration.sh
+    fi
+    source "$HOME/install_shell_integration.sh"
+  fi
+  source "${HOME}/.iterm2_shell_integration.bash"
+fi
+
+## END COMPLETIONS/SOURCES
 
 # ALIASES
 
@@ -573,11 +585,13 @@ function kgetall() {
 }
 
 function delk8s() {
-  cluster_name="$1"
+  cluster_names=( "$@" )
 
-  kubectl config unset "users.$cluster_name"
-  kubectl config unset "contexts.$cluster_name"
-  kubectl config unset "clusters.$cluster_name"
+  for cluster_name in "${cluster_names[@]}"; do
+    kubectl config unset "users.$cluster_name"
+    kubectl config unset "contexts.$cluster_name"
+    kubectl config unset "clusters.$cluster_name"
+  done
 }
 
 sort_history() {
@@ -636,6 +650,10 @@ shopt -s histverify
 # Alguns programas não conseguem resolver essa variável
 #PROMPT_COMMAND="history -a; history -c; history -r"
 #export PROMPT_COMMAND
+
+KUBE_PS1_CTX_COLOR="green"
+PS1="\[$reset\]\$([ \j -gt 0 ] && printf {\j} )\[$bold\][\[$blue\]\u\[$white\]@\$([[ \${KUBE_PS1_ENABLED} == \"off\" ]] && printf \[$green\]\h)\$(kube_ps1) \[$red\]\t \[$magenta\]\W\[$white\]]:\\$\[$reset\] "
+export PS1
 
 ## END BASH configs
 

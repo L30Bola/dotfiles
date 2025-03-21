@@ -21,6 +21,8 @@
   conflictstyle = diff3
 [diff]
   colorMoved = default
+[color]
+  ui = true
 
 [url "git@git.topfreegames.com:"]
   insteadOf = https://git.topfreegames.com/
@@ -59,7 +61,7 @@
     set +x; \
     local main_branch; \
     main_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p'); \
-    git merge --ff ${main_branch}; \
+    git merge --rebase ${main_branch}; \
     set -x; \
   }; mm"
 
@@ -103,11 +105,10 @@
     commit_message=$(git pou 2>&1); \
     echo \"$commit_message\"; \
     local url; \
-    url=$(grep -A1 'To create a pull request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
-    if [[ -z ${url} ]]; then \
-      url=$(grep -A1 'View pull request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+    url=$(grep -A1 'Create a pull request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+    if [[ ! -z ${url} ]]; then \
+      open -u ${url} | cat; \
     fi; \
-    open -u ${url} | cat; \
     set -x; \
   }; pgh"
 

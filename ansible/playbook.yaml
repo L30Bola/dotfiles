@@ -10,6 +10,7 @@
         update_homebrew: true
         upgrade_all: true
       tags:
+        - brew
         - homebrew
         - install
 
@@ -24,6 +25,8 @@
     - name: Install packages
       community.general.homebrew:
         name:
+          - agg
+          - asciinema
           - asdf
           - atuin
           - awscli
@@ -59,9 +62,11 @@
           - kind
           - kubectx
           - kubespy
+          - kube-ps1
           - less
           - m4
           - make
+          - openssl
           - openssh
           - pipx
           - python
@@ -82,6 +87,7 @@
           - z
         state: present
       tags:
+        - brew
         - homebrew
         - packages
         - quarantine
@@ -90,6 +96,7 @@
     - name: Install cask packages
       community.general.homebrew_cask:
         name:
+          - alt-tab
           # - bartender
           - background-music
           - bitwarden
@@ -97,6 +104,7 @@
           - dehesselle-meld
           - discord
           - docker
+          - domzilla-caffeine
           - font-fira-code-nerd-font
           - font-fira-mono-nerd-font
           - font-inconsolata-nerd-font
@@ -112,6 +120,7 @@
           - visual-studio-code
         state: present
       tags:
+        - brew
         - homebrew
         - casks
         - quarantine
@@ -125,6 +134,7 @@
         install_options:
           - no-quarantine
       tags:
+        - brew
         - homebrew
         - packages
         - no-quarantine
@@ -138,6 +148,7 @@
         install_options:
           - no-quarantine
       tags:
+        - brew
         - homebrew
         - casks
         - no-quarantine
@@ -204,14 +215,17 @@
     # Need to figure a proper way of not erroring when the plugin is already installed
     - name: Install Helm Diff plugin
       ansible.builtin.command:
-        cmd: helm plugin install https://github.com/databus23/helm-diff
+        cmd: helm plugin install {{ item }}
       register: helm_diff
       changed_when: helm_diff.rc != 0
       ignore_errors: true
+      with_items:
+        - https://github.com/databus23/helm-diff
+        - https://github.com/jzbruno/helm-import/
       tags:
         - helm
+        - install
         - plugin
-        - diff
 
     - name: Clone ble.sh repository
       ansible.builtin.git:
