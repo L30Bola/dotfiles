@@ -634,6 +634,12 @@ export HISTCONTROL
 HISTIGNORE="&,'[ ]*',history:hstr:bashHist"
 export HISTIGNORE
 
+# Set CLICOLOR if you want Ansi Colors in iTerm2
+export CLICOLOR=1
+
+# Set colors to match iTerm2 Terminal Colors
+export TERM=xterm-256color
+
 # append history entries..
 # Sempre concatena os comandos inseridos no bash_history
 shopt -s histappend

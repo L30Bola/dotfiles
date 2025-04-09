@@ -33,15 +33,7 @@
   insteadOf = http://git@git.topfreegames.com/
 
 [includeIf "gitdir:~/projetos/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:/srv/godoy/projetos/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/ghorg/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/projetos/local/"]
-  path = ~/.vim/gitconfigs/wls
-[includeIf "gitdir:~/scripts"]
-  path = ~/.vim/gitconfigs/wls
+  path = ~/.vim/gitconfigs/phrg
 
 [alias]
   com = "!com() { \
@@ -144,7 +136,7 @@
   untracked = "ls-files --other --exclude-standard"
   ignored = "status --ignored"
 [pull]
-  rebase = true
+  #rebase = true
 [branch]
   autosetuprebase = always
 [init]
