@@ -12,3 +12,4 @@ function blerc/disable-progcomp-for-auto-complete.advice {
 }
 
 _comp_load kubectl && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
+_comp_load kubens && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
