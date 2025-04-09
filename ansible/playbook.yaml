@@ -6,7 +6,6 @@
   tasks:
     - name: Install Homebrew
       community.general.homebrew:
-        state: present
         update_homebrew: true
         upgrade_all: true
       tags:
@@ -24,7 +23,8 @@
 
     - name: Install packages
       community.general.homebrew:
-        name:
+        force_formula: true
+        formula:
           - agg
           - asciinema
           - asdf
@@ -72,6 +72,7 @@
           - python
           - rclone
           - rsync
+          - s5cmd
           - sops
           - stern
           - syncthing
@@ -85,7 +86,7 @@
           - wget
           - yq
           - z
-        state: present
+        state: latest
       tags:
         - brew
         - homebrew
@@ -118,7 +119,7 @@
           - steelseries-gg
           - telegram-desktop
           - visual-studio-code
-        state: present
+        state: latest
       tags:
         - brew
         - homebrew
@@ -130,7 +131,7 @@
         name:
           - grishka/grishka/neardrop
           # - youtype
-        state: present
+        state: latest
         install_options:
           - no-quarantine
       tags:
@@ -144,7 +145,7 @@
         name:
           - mos
           - maccy
-        state: present
+        state: latest
         install_options:
           - no-quarantine
       tags:
@@ -177,7 +178,7 @@
       loop:
         - fzf latest
         - golang latest
-        - helm latest
+        - helm 3.17.2
         - kubectl 1.30.4
         - sops 3.8.1
         - python 3.13.2
