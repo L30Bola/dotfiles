@@ -674,6 +674,22 @@ if [[ $- =~ .*i.* ]]; then
   ble-bind -m 'emacs' -x "C-b" '__atuin_history --keymap-mode=emacs'
 fi
 
+## END Bindings
+
+## Ble.sh
+
+function blerc/disable-progcomp-for-auto-complete.advice {
+  if [[ $BLE_ATTACHED && :$comp_type: == *:auto:* ]]; then
+    return 0
+  fi
+  ble/function#advice/do
+}
+
+# END Ble.sh
+
+_comp_load kubectl && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
+_comp_load kubens && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
+
 LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
 
 echo "duration: $(calc -p "$end" - "$begin") seconds."

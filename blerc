@@ -4,12 +4,3 @@ bleopt editor=vim
 bleopt history_lazyload=1
 bleopt prompt_eol_mark='⏎'
 
-function blerc/disable-progcomp-for-auto-complete.advice {
-  if [[ $BLE_ATTACHED && :$comp_type: == *:auto:* ]]; then
-    return 0
-  fi
-  ble/function#advice/do
-}
-
-_comp_load kubectl && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
-_comp_load kubens && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
