@@ -23,7 +23,7 @@ if uname | grep --silent "Darwin"; then
   export PATH
 fi
 
-ASDF_DATA_DIR=/Users/leonardo.godoy/.asdf
+ASDF_DATA_DIR="$HOME/.asdf"
 export ASDF_DATA_DIR
 export PATH="$ASDF_DATA_DIR/shims:$PATH"
 
@@ -265,6 +265,10 @@ fi
 
 if command -v asdf > /dev/null; then
   source <(asdf completion bash)
+fi
+
+if [[ -f '/opt/kube-ps1/kube-ps1.sh' ]]; then
+  source '/opt/kube-ps1/kube-ps1.sh'
 fi
 
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -676,7 +680,9 @@ echo "duration: $(calc -p "$end" - "$begin") seconds."
 
 [[ ${BLE_VERSION-} ]] && ble-attach
 
-defaults write -g InitialKeyRepeat -int 11
-defaults write -g KeyRepeat -int 1
+if uname | grep --silent "Darwin"; then
+  defaults write -g InitialKeyRepeat -int 11
+  defaults write -g KeyRepeat -int 1
+fi
 
 eval "$(atuin init bash --disable-up-arrow)"
