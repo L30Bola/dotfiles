@@ -78,6 +78,7 @@
           - syncthing
           - tailscale
           - the_silver_searcher
+          - tilt
           - tmux
           - unzip
           - vim
