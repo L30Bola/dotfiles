@@ -21,6 +21,9 @@
   conflictstyle = diff3
 [diff]
   colorMoved = default
+  tool = meld
+[difftool]
+  prompt = false
 [color]
   ui = true
 
@@ -51,9 +54,13 @@
 
   mm = "!mm() { \
     set +x; \
+    local last_branch; \
+    last_branch=$(git rev-parse --abbrev-ref HEAD); \
     local main_branch; \
     main_branch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p'); \
-    git merge --rebase ${main_branch}; \
+    git k; \
+    git checkout ${last_branch}; \
+    git merge ${main_branch}; \
     set -x; \
   }; mm"
 
@@ -87,7 +94,7 @@
     if [[ -z ${url} ]]; then \
       url=$(grep -A1 'View merge request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
     fi; \
-    open -u ${url} | cat; \
+    open ${url} | cat; \
     set -x; \
   }; pgl"
 
@@ -98,8 +105,9 @@
     echo \"$commit_message\"; \
     local url; \
     url=$(grep -A1 'Create a pull request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+    echo \"$url\"; \
     if [[ ! -z ${url} ]]; then \
-      open -u ${url} | cat; \
+      open ${url} | cat; \
     fi; \
     set -x; \
   }; pgh"
@@ -128,13 +136,16 @@
   r = "rebase"
   rh = "reset HEAD"
   s = "status"
+  sh = "show"
   st = "stash"
   t = "tag"
 
   staged = "diff --name-only --staged"
   unstaged = "diff --name-only"
   untracked = "ls-files --other --exclude-standard"
+  deleted = "ls-files --deleted"
   ignored = "status --ignored"
+  unmerged = "diff --name-only --diff-filter=U"
 [pull]
   #rebase = true
 [branch]

@@ -13,13 +13,13 @@
         - homebrew
         - install
 
-    - name: Install Rosetta 2
-      ansible.builtin.command:
-        cmd: softwareupdate --install-rosetta --agree-to-license
-      register: rosetta2
-      changed_when: rosetta2.rc != 0
-      tags:
-        - rosetta2
+    # - name: Install Rosetta 2
+    #   ansible.builtin.command:
+    #     cmd: softwareupdate --install-rosetta --agree-to-license
+    #   register: rosetta2
+    #   changed_when: rosetta2.rc != 0
+    #   tags:
+    #     - rosetta2
 
     - name: Install packages
       community.general.homebrew:
@@ -34,13 +34,18 @@
           - bash-completion@2
           - bat
           - binutils
+          - bitwarden-cli
           - calc
+          - charmbracelet/tap/freeze
           - cilium-cli
           - clusterctl
           - coreutils
           - curl
           - diffutils
           - ed
+          - expect
+          - fastfetch
+          - ffmpeg
           - file-formula
           - fileicon
           - findutils
@@ -56,8 +61,10 @@
           - gnutls
           - gpatch
           - grep
+          - gum
           - gzip
           - htop
+          - hubble
           - jq
           - kind
           - kubectx
@@ -73,18 +80,23 @@
           - rclone
           - rsync
           - s5cmd
+          - scrcpy
+          - shellcheck
+          - shfmt
           - sops
           - stern
           - syncthing
           - tailscale
           - the_silver_searcher
           - tilt
+          - tree
           - tmux
           - unzip
           - vim
           - watch
           - wdiff
           - wget
+          - wireshark
           - yq
           - z
         state: latest
@@ -99,27 +111,30 @@
       community.general.homebrew_cask:
         name:
           - alt-tab
-          # - bartender
-          - background-music
+          - android-platform-tools
+          - bartender
           - bitwarden
           - cmake
           - dehesselle-meld
           - discord
           - docker
           - domzilla-caffeine
+          - element
           - font-fira-code-nerd-font
           - font-fira-mono-nerd-font
           - font-inconsolata-nerd-font
           - font-roboto-mono-nerd-font
           - google-chrome
           - iterm2
-          - logitech-g-hub
+          # - logi-options+
           - multitouch
           - rectangle
+          - soundsource
           - spotify
           - steelseries-gg
           - telegram-desktop
           - visual-studio-code
+          - winbox
         state: latest
       tags:
         - brew

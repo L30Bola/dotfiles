@@ -185,15 +185,6 @@ if command -v helm diff completion bash > /dev/null; then
   source <(helm diff completion bash)
 fi
 
-if command -v bigbang > /dev/null; then
-  source <(bigbang completion bash)
-fi
-
-if command -v terraform > /dev/null; then
-  complete -C "/var/lib/tfenv/versions/$(tfenv version-name)/terraform" terraform
-  complete -C "/var/lib/tfenv/versions/$(tfenv version-name)/terraform" tf
-fi
-
 if command -v mc > /dev/null; then
   complete -C "$(command -v mc)" mc
 fi
@@ -201,18 +192,6 @@ fi
 if command -v vault > /dev/null; then
   complete -C "$(command -v vault)" vault
 fi
-
-if command -v aws_completer > /dev/null; then
-  complete -C "$(command -v aws_completer)" aws
-fi
-
-if command -v fluxctl > /dev/null; then
-  source <(fluxctl completion bash)
-fi
-
-#if command -v cmctl > /dev/null; then
-#  source <(cmctl completion bash)
-#fi
 
 if command -v vcluster > /dev/null; then
   source <(vcluster completion bash)
@@ -242,14 +221,6 @@ if command -v kyverno > /dev/null; then
   source <(kyverno completion bash)
 fi
 
-if command -v glab > /dev/null; then
-  source <(glab completion bash)
-fi
-
-if command -v flux > /dev/null; then
-  source <(flux completion bash)
-fi
-
 if [[ -d ~/.kubech/ ]]; then
   source ~/.kubech/kubech
   source ~/.kubech/completion/kubech.bash
@@ -259,10 +230,6 @@ if command -v hubble > /dev/null; then
   source <(hubble completion bash)
 fi
 
-if command -v chainsaw > /dev/null; then
-  source <(chainsaw completion bash)
-fi
-
 if command -v asdf > /dev/null; then
   source <(asdf completion bash)
 fi
@@ -270,9 +237,6 @@ fi
 if [[ -f '/opt/kube-ps1/kube-ps1.sh' ]]; then
   source '/opt/kube-ps1/kube-ps1.sh'
 fi
-
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 if [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
   if [[ ! -e "${HOME}/.iterm2_shell_integration.bash" ]]; then
@@ -298,8 +262,6 @@ alias ls='ls --color=auto'
 alias dockerm="docker rm \$(docker ps -a -q)"
 alias dockermi="docker rmi \$(docker images -q)"
 # http://blog.pixelastic.com/2015/09/29/better-listing-of-docker-images-and-container/
-alias netalyzr="java -jar ~/.NetalyzrCLI.jar"
-alias apgdiff="java -jar ~/.apgdiff-2.4.jar"
 alias tmux="tmux -2"
 alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias meuip="curl -w '\n' ipinfo.io/ip"
@@ -329,7 +291,7 @@ alias d="docker"
 alias inputrc="vim ~/.inputrc && exec bash"
 alias sshconfig="vim ~/.ssh/config"
 alias watch="watch "
-alias bfg="java -jar ~/.local/lib/bfg-1.14.0.jar"
+alias bfg="java -jar ~/.local/lib/bfg-1.15.0.jar"
 alias docker-compose="docker compose"
 alias h="helm"
 alias f="flux"
@@ -688,7 +650,9 @@ function blerc/disable-progcomp-for-auto-complete.advice {
 # END Ble.sh
 
 _comp_load kubectl && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
+_comp_load k && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
 _comp_load kubens && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
+_comp_load kns && ble/function#advice around blerc/disable-progcomp-for-auto-complete.advice
 
 LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8 end="${EPOCHREALTIME}"
 
