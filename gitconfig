@@ -86,28 +86,33 @@
 
   pgl = "!pgl() { \
     set +x; \
+    local open_cmd; \
+    [[ \"$(uname)\" == \"Darwin\" ]] && open_cmd=\"open\" || open_cmd=\"xdg-open\"; \
     local commit_message; \
     commit_message=$(git pou 2>&1); \
     echo \"$commit_message\"; \
     local url; \
-    url=$(grep -A1 'To create a merge request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+    url=$(grep -A1 'To create a merge request for' <<< \"${commit_message}\" | grep -oE 'https?://[^ ]+'); \
     if [[ -z ${url} ]]; then \
-      url=$(grep -A1 'View merge request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
+      url=$(grep -A1 'View merge request for' <<< \"${commit_message}\" | grep -oE 'https?://[^ ]+'); \
     fi; \
-    open ${url} | cat; \
+    echo \"URL: ${url}\"; \
+    ${open_cmd} ${url} | cat; \
     set -x; \
   }; pgl"
 
   pgh = "!pgh() { \
     set +x; \
+    local open_cmd; \
+    [[ \"$(uname)\" == \"Darwin\" ]] && open_cmd=\"open\" || open_cmd=\"xdg-open\"; \
     local commit_message; \
     commit_message=$(git pou 2>&1); \
     echo \"$commit_message\"; \
     local url; \
-    url=$(grep -A1 'Create a pull request for' <<< ${commit_message} | grep http | awk '{ print $2 }'); \
-    echo \"$url\"; \
-    if [[ ! -z ${url} ]]; then \
-      open ${url} | cat; \
+    url=$(grep -A1 'Create a pull request for' <<< \"${commit_message}\" | grep -oE 'https?://[^ ]+'); \
+    echo \"URL: ${url}\"; \
+    if [[ -n ${url} ]]; then \
+      ${open_cmd} ${url} | cat; \
     fi; \
     set -x; \
   }; pgh"
