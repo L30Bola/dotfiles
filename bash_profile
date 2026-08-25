@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-# Number of lines or commands to be added to history file
-export HISTSIZE=-1
-
-# Number of lines or commands that are allowed to be stored on history file
-export HISTFILESIZE=-1
-
 # Date and time added to history before each command is written on the history file
 # It's formatted as: year/month/day - hour:minute:second
 export HISTTIMEFORMAT="%Y/%m/%d - %T: "

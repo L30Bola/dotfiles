@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+completion_dir="${BASH_COMPLETION_USER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion/completions}"
+mkdir -p "$completion_dir"
+
+generate_completion() {
+  local name=$1
+  local executable=$2
+  local destination="$completion_dir/$name"
+  shift 2
+
+  if ! command -v "$executable" > /dev/null 2>&1; then
+    if [[ -f "$destination" ]]; then
+      rm -f "$destination"
+      printf 'removed: %s (command not installed)\n' "$name"
+      return 0
+    fi
+    printf 'skipped: %s (command not installed)\n' "$name"
+    return 0
+  fi
+
+  local temporary
+  temporary=$(mktemp "$completion_dir/.${name}.XXXXXX")
+
+  if ! "$@" > "$temporary"; then
+    rm -f "$temporary"
+    printf 'failed: %s\n' "$name" >&2
+    return 1
+  fi
+
+  if [[ ! -s "$temporary" ]]; then
+    rm -f "$temporary"
+    printf 'failed: %s generated an empty completion\n' "$name" >&2
+    return 1
+  fi
+
+  if [[ -f "$destination" ]] && cmp -s "$temporary" "$destination"; then
+    rm -f "$temporary"
+    printf 'unchanged: %s\n' "$name"
+    return 0
+  fi
+
+  chmod 0644 "$temporary"
+  mv -f "$temporary" "$destination"
+  printf 'updated: %s\n' "$name"
+}
+
+generate_completion ketall ketall ketall completion bash
+generate_completion helm helm helm completion bash
+generate_completion vcluster vcluster vcluster completion bash
+generate_completion kops kops kops completion bash
+generate_completion kind kind kind completion bash
+generate_completion cilium cilium cilium completion bash
+generate_completion tilt tilt tilt completion bash
+generate_completion kubectl kubectl kubectl completion bash
+generate_completion kyverno kyverno kyverno completion bash
+generate_completion hubble hubble hubble completion bash
+generate_completion asdf asdf asdf completion bash

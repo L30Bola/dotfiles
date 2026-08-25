@@ -117,7 +117,6 @@
           - cmake
           - dehesselle-meld
           - discord
-          - docker
           - domzilla-caffeine
           - element
           - font-fira-code-nerd-font
@@ -194,10 +193,10 @@
       loop:
         - fzf latest
         - golang latest
-        - helm 3.17.2
-        - kubectl 1.30.4
-        - sops 3.8.1
-        - python 3.13.2
+        - helm latest
+        - kubectl 1.34.4
+        - sops latest
+        - python latest
       tags:
         - asdf
         - global
@@ -210,6 +209,35 @@
       tags:
         - asdf
         - versions
+
+    - name: Update Bash completion cache
+      ansible.builtin.command:
+        cmd: "{{ playbook_dir }}/../bin/update-bash-completions"
+      environment:
+        PATH: "{{ lookup('env', 'HOME') }}/.asdf/shims:{{ ansible_env.PATH }}"
+      register: bash_completion_cache
+      changed_when: >-
+        'updated:' in bash_completion_cache.stdout or
+        'removed:' in bash_completion_cache.stdout
+      tags:
+        - bash
+        - completions
+
+    - name: Configure keyboard repeat
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: "{{ item.key }}"
+        type: int
+        value: "{{ item.value }}"
+      loop:
+        - key: InitialKeyRepeat
+          value: 11
+        - key: KeyRepeat
+          value: 1
+      when: ansible_facts["system"] == "Darwin"
+      tags:
+        - macos
+        - keyboard
 
     - name: Set Application Icons
       ansible.builtin.command:
@@ -266,6 +294,15 @@
         - ble.sh
         - install
 
+    - name: Ensure local binary directory exists
+      ansible.builtin.file:
+        path: "~/.local/bin"
+        state: directory
+        mode: "0755"
+      tags:
+        - dotfiles
+        - setup
+
     - name: Setup dotfiles (create symbolic links)
       ansible.builtin.file:
         src: "{{ item.src }}"
@@ -288,6 +325,8 @@
           dest: "~/.bash_completion"
         - src: "{{ playbook_dir }}/../blerc"
           dest: "~/.blerc"
+        - src: "{{ playbook_dir }}/../bin/update-bash-completions"
+          dest: "~/.local/bin/update-bash-completions"
       tags:
         - dotfiles
         - setup
