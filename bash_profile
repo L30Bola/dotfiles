@@ -1,3 +1,7 @@
+# The following lines were added by Docker Desktop to add commands to your PATH.
+export PATH="$PATH:/Users/leonardo.godoy/.docker/bin"
+# End of Docker Desktop section.
+
 #!/usr/bin/env bash
 
 # Date and time added to history before each command is written on the history file

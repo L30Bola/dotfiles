@@ -228,6 +228,7 @@ alias blerc="vim ~/.blerc && source ~/.bashrc"
 alias bashHist="vim ~/.bash_history"
 alias vimrc="vim ~/.vimrc"
 alias gitconfig="vim ~/.gitconfig"
+alias sshconfig="vim ~/.ssh/config"
 if uname | grep -q "Darwin"; then
     alias btime="$(brew --prefix)/opt/gnu-time/libexec/gnubin/time --format='\n%C took %e seconds.'"
 else

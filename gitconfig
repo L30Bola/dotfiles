@@ -124,6 +124,11 @@
     git st pop; \
   }; stk"
 
+  wl = "!wl() { \
+    set +x; \
+    git w list; \
+  }; wl"
+
   a = "add"
   b = "branch"
   c = "commit"
@@ -144,6 +149,7 @@
   sh = "show"
   st = "stash"
   t = "tag"
+  w = "worktree"
 
   staged = "diff --name-only --staged"
   unstaged = "diff --name-only"
@@ -154,6 +160,6 @@
 [pull]
   #rebase = true
 [branch]
-  autosetuprebase = always
+  #autosetuprebase = always
 [init]
   defaultBranch = master

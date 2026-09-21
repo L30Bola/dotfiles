@@ -4,10 +4,9 @@
   hosts: localhost
   connection: local
   tasks:
-    - name: Install Homebrew
+    - name: Update Homebrew
       community.general.homebrew:
         update_homebrew: true
-        upgrade_all: true
       tags:
         - brew
         - homebrew

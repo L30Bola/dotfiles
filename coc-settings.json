@@ -1,12 +1,9 @@
 {
-  "diagnostic-languageserver.filetypes": {
-    "markdown": "markdownlint",
-    "terraform": "terraform"
-  },
   "languageserver": {
     "terraform": {
-      "command": "terraform-lsp",
+      "command": "terraform-ls",
       "args": [
+        "serve"
       ],
       "filetypes": [
         "terraform",
@@ -17,13 +14,5 @@
     }
   },
 
-  "suggest.enablePreview": true,
-  "python.jediEnabled": false,
-  "python.linting.flake8Enabled": false,
-  "python.linting.pylintEnabled": true,
-  "suggest.timeout": 5000,
-  "git.enableGutters": true,
-  "yaml.format.enable": true,
-  "yaml.completion": true,
-  "snippets.ultisnips.pythonPrompt": false
+  "python.linting.pylintEnabled": true
 }
