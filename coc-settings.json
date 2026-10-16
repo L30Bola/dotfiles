@@ -14,5 +14,8 @@
     }
   },
 
-  "python.linting.pylintEnabled": true
+  "python.linting.pylintEnabled": true,
+  "json.schemaDownload.trustedDomains": {
+    "https://www.schemastore.org": true
+  }
 }
