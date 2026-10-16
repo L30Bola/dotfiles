@@ -3,6 +3,31 @@
   gather_facts: true
   hosts: localhost
   connection: local
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    setup_home: "{{ lookup('env', 'HOME') }}"
+    dotfiles_dir: "{{ playbook_dir }}/.."
+    ble_sh_dir: "{{ setup_home }}/ble.sh"
+    ble_sh_version: HEAD
+    asdf_data_dir: "{{ lookup('env', 'ASDF_DATA_DIR') or (setup_home ~ '/.asdf') }}"
+    application_icon_files:
+      - name: "Visual Studio Code.app"
+        icon: "{{ dotfiles_dir }}/icons/vscode.icns"
+      - name: "Google Chrome.app"
+        icon: "{{ dotfiles_dir }}/icons/chrome.icns"
+      - name: "Spotify.app"
+        icon: "{{ dotfiles_dir }}/icons/spotify.icns"
+      - name: "Telegram Desktop.app"
+        icon: "{{ dotfiles_dir }}/icons/telegram.icns"
+    asdf_tool_versions:
+      fzf: latest
+      golang: latest
+      helm: latest
+      kubectl: "1.34.4"
+      sops: latest
+      python: latest
+  environment:
+    PATH: "{{ asdf_data_dir }}/shims:{{ lookup('env', 'PATH') }}"
   tasks:
     - name: Update Homebrew
       community.general.homebrew:
@@ -105,7 +130,6 @@
         - packages
         - quarantine
 
-    # Sometimes I've seen the need to admin password, so keep an eye on this
     - name: Install cask packages
       community.general.homebrew_cask:
         name:
@@ -113,8 +137,8 @@
           - android-platform-tools
           - bartender
           - bitwarden
-          - cmake
-          - dehesselle-meld
+          - cmake-app
+          - meld
           - discord
           - domzilla-caffeine
           - element
@@ -134,86 +158,102 @@
           - visual-studio-code
           - winbox
         state: latest
+        sudo_password: "{{ homebrew_sudo_password | default(omit) }}"
       tags:
         - brew
         - homebrew
         - casks
         - quarantine
 
-    - name: Install packages without quarantine
-      community.general.homebrew:
+    - name: Install NearDrop
+      community.general.homebrew_cask:
         name:
           - grishka/grishka/neardrop
           # - youtype
         state: latest
-        install_options:
-          - no-quarantine
+        sudo_password: "{{ homebrew_sudo_password | default(omit) }}"
       tags:
         - brew
         - homebrew
         - packages
-        - no-quarantine
+        - no-quarantine # Legacy task-selection tag; no quarantine option is passed.
 
-    - name: Install casks without quarantine
+    - name: Install additional casks
       community.general.homebrew_cask:
         name:
           - mos
           - maccy
         state: latest
-        install_options:
-          - no-quarantine
+        sudo_password: "{{ homebrew_sudo_password | default(omit) }}"
       tags:
         - brew
         - homebrew
         - casks
-        - no-quarantine
+        - no-quarantine # Legacy task-selection tag; no quarantine option is passed.
 
     - name: Install asdf plugins
       ansible.builtin.command:
-        cmd: asdf plugin add {{ item }}
-      register: asdf_plugins
-      changed_when: asdf_plugins.rc != 0
-      loop:
-        - fzf
-        - golang
-        - helm
-        - sops
-        - kubectl
-        - python
+        argv:
+          - asdf
+          - plugin
+          - add
+          - "{{ item }}"
+        creates: "{{ asdf_data_dir }}/plugins/{{ item }}"
+      loop: "{{ asdf_tool_versions.keys() | list }}"
       tags:
         - asdf
         - plugins
 
-    - name: Set global asdf versions
+    - name: Resolve latest asdf versions
       ansible.builtin.command:
-        cmd: asdf set -u {{ item }}
-      register: asdf_global
-      changed_when: asdf_global.rc != 0
-      loop:
-        - fzf latest
-        - golang latest
-        - helm latest
-        - kubectl 1.34.4
-        - sops latest
-        - python latest
+        argv:
+          - asdf
+          - latest
+          - "{{ item.key }}"
+      register: asdf_latest_versions
+      changed_when: false
+      check_mode: false
+      loop: "{{ asdf_tool_versions | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      when: item.value == 'latest'
       tags:
         - asdf
         - global
+        - versions
 
     - name: Install asdf versions
       ansible.builtin.command:
-        cmd: asdf install
-      register: asdf_versions
-      changed_when: asdf_versions.rc != 0
+        argv:
+          - asdf
+          - install
+          - "{{ item.item.key }}"
+          - "{{ item.stdout | default(item.item.value) | trim }}"
+        creates: "{{ asdf_data_dir }}/installs/{{ item.item.key }}/{{ item.stdout | default(item.item.value) | trim }}"
+      loop: "{{ asdf_latest_versions.results }}"
+      loop_control:
+        label: "{{ item.item.key }} {{ item.stdout | default(item.item.value) | trim }}"
       tags:
         - asdf
         - versions
 
+    - name: Set global asdf versions
+      ansible.builtin.lineinfile:
+        path: "{{ setup_home }}/.tool-versions"
+        regexp: "^{{ item.item.key }}\\s+"
+        line: "{{ item.item.key }} {{ item.stdout | default(item.item.value) | trim }}"
+        create: true
+        mode: "0644"
+      loop: "{{ asdf_latest_versions.results }}"
+      loop_control:
+        label: "{{ item.item.key }} {{ item.stdout | default(item.item.value) | trim }}"
+      tags:
+        - asdf
+        - global
+
     - name: Update Bash completion cache
       ansible.builtin.command:
-        cmd: "{{ playbook_dir }}/../bin/update-bash-completions"
-      environment:
-        PATH: "{{ lookup('env', 'HOME') }}/.asdf/shims:{{ ansible_env.PATH }}"
+        cmd: "{{ dotfiles_dir }}/bin/update-bash-completions"
       register: bash_completion_cache
       changed_when: >-
         'updated:' in bash_completion_cache.stdout or
@@ -238,57 +278,121 @@
         - macos
         - keyboard
 
-    - name: Set Application Icons
-      ansible.builtin.command:
-        cmd: fileicon set "/Applications/{{ item.name }}" "{{ item.icon }}"
-      loop:
-        - name: "Visual Studio Code.app"
-          icon: "{{ playbook_dir }}/../icons/vscode.icns"
-        - name: "Google Chrome.app"
-          icon: "{{ playbook_dir }}/../icons/chrome.icns"
-        - name: "Spotify.app"
-          icon: "{{ playbook_dir }}/../icons/spotify.icns"
-        - name: "Telegram Desktop.app"
-          icon: "{{ playbook_dir }}/../icons/telegram.icns"
-      register: application_icons
-      changed_when: application_icons.rc != 0
+    - name: Inspect application icon permissions
+      ansible.builtin.stat:
+        path: "/Applications/{{ item.name }}"
+        get_checksum: false
+      register: application_icon_targets
+      loop: "{{ application_icon_files }}"
+      loop_control:
+        label: "{{ item.name }}"
       tags:
         - application
         - icons
 
-    # Need to figure a proper way of not erroring when the plugin is already installed
-    - name: Install Helm Diff plugin
+    - name: Set Application Icons
       ansible.builtin.command:
-        cmd: helm plugin install {{ item }}
-      register: helm_diff
-      changed_when: helm_diff.rc != 0
-      ignore_errors: true
-      with_items:
-        - https://github.com/databus23/helm-diff
-        - https://github.com/jzbruno/helm-import/
+        argv:
+          - fileicon
+          - set
+          - "/Applications/{{ item.item.name }}"
+          - "{{ item.item.icon }}"
+      become: "{{ not (item.stat.writeable | default(false)) }}"
+      loop: "{{ application_icon_targets.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+      register: application_icons
+      changed_when: application_icons.rc == 0
+      tags:
+        - application
+        - icons
+
+    - name: List installed Helm plugins
+      ansible.builtin.command:
+        argv:
+          - helm
+          - plugin
+          - list
+      register: helm_plugins
+      changed_when: false
+      check_mode: false
       tags:
         - helm
         - install
         - plugin
 
+    - name: Install missing Helm plugins
+      ansible.builtin.command:
+        argv:
+          - helm
+          - plugin
+          - install
+          - "{{ item.url }}"
+      changed_when: true
+      when: not (helm_plugins.stdout is search('(?m)^' ~ item.name ~ '\\s'))
+      loop:
+        - name: diff
+          url: https://github.com/databus23/helm-diff
+        - name: import
+          url: https://github.com/jzbruno/helm-import/
+      tags:
+        - helm
+        - install
+        - plugin
+
+    - name: Inspect ble.sh checkout
+      ansible.builtin.stat:
+        path: "{{ ble_sh_dir }}/.git"
+      register: ble_sh_git_metadata
+      tags:
+        - ble.sh
+        - git
+
+    # The git module does not recognize linked worktrees as existing repositories.
+    - name: Update ble.sh linked worktree
+      ansible.builtin.shell: |
+        set -eu
+        before=$(git -C "$BLE_SH_DIRECTORY" rev-parse HEAD)
+        git -C "$BLE_SH_DIRECTORY" fetch --depth 1 origin "$BLE_SH_REVISION"
+        git -C "$BLE_SH_DIRECTORY" checkout --detach FETCH_HEAD
+        git -C "$BLE_SH_DIRECTORY" submodule update --init --recursive --depth 1
+        after=$(git -C "$BLE_SH_DIRECTORY" rev-parse HEAD)
+        if [ "$before" != "$after" ]; then
+          printf 'updated: ble.sh\n'
+        fi
+      environment:
+        BLE_SH_DIRECTORY: "{{ ble_sh_dir }}"
+        BLE_SH_REVISION: "{{ ble_sh_version }}"
+      when: ble_sh_git_metadata.stat.isreg | default(false)
+      register: ble_sh_worktree_update
+      changed_when: "'updated: ble.sh' in ble_sh_worktree_update.stdout"
+      tags:
+        - ble.sh
+        - git
+
+    # This setup intentionally tracks upstream ble.sh updates.
     - name: Clone ble.sh repository
-      ansible.builtin.git:
-        dest: ~/ble.sh
+      ansible.builtin.git: # noqa: latest[git]
+        dest: "{{ ble_sh_dir }}"
+        version: "{{ ble_sh_version }}"
         clone: true
         recursive: true
         depth: 1
         repo: https://github.com/akinomyoga/ble.sh.git
+      when: not (ble_sh_git_metadata.stat.isreg | default(false))
       tags:
         - ble.sh
         - git
 
     - name: Install ble.sh
       ansible.builtin.command:
-        cmd: gmake -C ble.sh install PREFIX="{{ lookup('env', 'HOME') }}/.local"
-        chdir: "{{ lookup('env', 'HOME') }}"
+        argv:
+          - gmake
+          - -C
+          - "{{ ble_sh_dir }}"
+          - install
+          - "PREFIX={{ setup_home }}/.local"
         creates: "{{ lookup('env', 'HOME') }}/.local/share/blesh/ble.sh"
-      register: ble_sh_install
-      changed_when: ble_sh_install.rc != 0
       tags:
         - ble.sh
         - install
@@ -308,23 +412,23 @@
         dest: "{{ item.dest }}"
         state: link
       with_items:
-        - src: "{{ playbook_dir }}/../bash_profile"
+        - src: "{{ dotfiles_dir }}/bash_profile"
           dest: "~/.bash_profile"
-        - src: "{{ playbook_dir }}/../bashrc"
+        - src: "{{ dotfiles_dir }}/bashrc"
           dest: "~/.bashrc"
-        - src: "{{ playbook_dir }}/../gitconfig"
+        - src: "{{ dotfiles_dir }}/gitconfig"
           dest: "~/.gitconfig"
-        - src: "{{ playbook_dir }}/../pythonrc"
+        - src: "{{ dotfiles_dir }}/pythonrc"
           dest: "~/.pythonrc"
-        - src: "{{ playbook_dir }}/../tmux.conf"
+        - src: "{{ dotfiles_dir }}/tmux.conf"
           dest: "~/.tmux.conf"
-        - src: "{{ playbook_dir }}/../vimrc"
+        - src: "{{ dotfiles_dir }}/vimrc"
           dest: "~/.vimrc"
-        - src: "{{ playbook_dir }}/../bash_completion"
+        - src: "{{ dotfiles_dir }}/bash_completion"
           dest: "~/.bash_completion"
-        - src: "{{ playbook_dir }}/../blerc"
+        - src: "{{ dotfiles_dir }}/blerc"
           dest: "~/.blerc"
-        - src: "{{ playbook_dir }}/../bin/update-bash-completions"
+        - src: "{{ dotfiles_dir }}/bin/update-bash-completions"
           dest: "~/.local/bin/update-bash-completions"
       tags:
         - dotfiles
